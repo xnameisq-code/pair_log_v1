@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OUR ARCHIVE - Final Fixed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@300;400;700&family=Gowun+Dodum&family=Gaegu&family=Do+Hyeon&family=Song+Myung&family=Jua&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS 변수 */
+        :root {
+            --theme-color: #FFCDC9;
+            --theme-light: #FFF0EE;
+            --bg-color: #FFFAFA;
+            --text-color: #374151;
+            --main-font: 'Noto Sans KR', sans-serif;
+            
+            --base-font-size: 16px;
+            --line-height: 1.6;
+            --letter-spacing: 0px;
+            --font-weight: 400;
+            --font-style: normal;
+        }
+
+        body { 
+            font-family: var(--main-font); background-color: var(--bg-color); color: var(--text-color);
+            font-size: var(--base-font-size); line-height: var(--line-height); letter-spacing: var(--letter-spacing);
+            font-weight: var(--font-weight); font-style: var(--font-style);
+            overflow-x: hidden; transition: background-color 0.3s, color 0.3s;
+        }
+
+        .font-script { font-family: 'Dancing Script', cursive; }
+        .font-hand { font-family: 'Nanum Pen Script', cursive; }
+        .font-novel { font-family: 'Song Myung', serif; }
+        .theme-text { color: var(--theme-color) !important; }
+        .theme-bg { background-color: var(--theme-color) !important; }
+        .hidden { display: none !important; }
+
+        /* 레이아웃 */
+        .auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #F7F7F5; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .app-container { display: flex; min-height: 100vh; max-width: 600px; margin: 0 auto; background-color: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.05); position: relative; }
+        .content-area { flex-grow: 1; padding-bottom: 40px; min-height: 100vh; background-color: #fff; overflow-y: auto; position: relative; }
+        
+        .tab-bar { width: 70px; background-color: #ffffff; border-left: 1px solid #f3f4f6; display: flex; flex-direction: column; align-items: center; padding-top: 20px; z-index: 50; flex-shrink: 0; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #d1d5db; font-size: 0.65rem; cursor: pointer; transition: all 0.2s; width: 100%; height: 70px; margin-bottom: 8px; }
+        .tab-item.active { color: var(--theme-color); font-weight: bold; }
+        .tab-item.active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 60%; background-color: var(--theme-color); border-radius: 0 4px 4px 0; }
+        .tab-icon { font-size: 1.4rem; margin-bottom: 4px; transition: transform 0.2s; }
+        .tab-item:hover .tab-icon { transform: scale(1.1); }
+        .tab-content { display: none; padding: 24px; animation: fadeIn 0.3s ease-out; min-height: 100%; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* 스타일 */
+        .fab-btn { position: fixed; bottom: 30px; right: 90px; width: 50px; height: 50px; background-color: var(--theme-color); color: #374151; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; z-index: 40; transition: transform 0.2s; }
+        .fab-btn:hover { transform: scale(1.1) rotate(90deg); }
+        
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.8); z-index: 100; 
+            display: flex; align-items: center; justify-content: center; 
+            opacity: 0; pointer-events: none; transition: opacity 0.3s; 
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .upload-modal-box { background: white; width: 90%; max-width: 320px; padding: 20px; border-radius: 16px; text-align: center; transform: translateY(20px); transition: 0.3s; }
+        .modal-overlay.open .upload-modal-box { transform: translateY(0); }
+        
+        .full-screen-modal-box { background: white; width: 100%; height: 100%; max-width: 600px; display: flex; flex-direction: column; transform: translateY(100%); transition: 0.3s; }
+        .modal-overlay.open .full-screen-modal-box { transform: translateY(0); }
+        
+        .novel-page-container { width: 100%; height: 100%; background-color: #fff; padding: 40px 30px; overflow-y: auto; }
+
+        /* 진행바 */
+        .progress-bar-bg { width: 100%; background-color: #e5e7eb; border-radius: 9999px; height: 10px; position: relative; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background-color: var(--theme-color); transition: width 1s ease-in-out; width: 0%; border-radius: 9999px; }
+        .percent-tooltip { position: absolute; top: -30px; left:0; transform: translateX(-50%); background-color: var(--theme-color); color: #374151; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; white-space: nowrap; transition: left 1s ease-in-out; }
+        .percent-tooltip::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid var(--theme-color); }
+
+        /* 탭별 스타일 */
+        .profile-img-container { width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; background-color: #f3f4f6; cursor: pointer; }
+        .main-photo-frame { width: 100%; aspect-ratio: 4 / 3; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); position: relative; background-color: #f3f4f6; cursor: pointer; }
+        
+        .album-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding-bottom: 60px; }
+        .polaroid { background: white; padding: 8px 8px 35px 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s; cursor: pointer; }
+        .polaroid:hover { transform: scale(1.05) rotate(1deg); z-index: 10; }
+        .polaroid-img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; background: #eee; }
+        .polaroid-caption { position: absolute; bottom: 5px; width: 100%; text-align: center; left:0; font-family: var(--main-font); font-size: 1.1rem; }
+        
+        .memo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding-bottom: 60px; }
+        .memo-card { background: var(--theme-light); padding: 20px 15px; border-radius: 4px; position: relative; min-height: 140px; cursor: pointer; background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 15px 15px; }
+        .memo-tape { position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 40%; height: 18px; background: rgba(255,255,255,0.4); backdrop-filter: blur(2px); }
+        .memo-content { font-family: var(--main-font); font-size: 0.9rem; flex-grow: 1; margin-bottom: 10px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+        .memo-footer { border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: #6b7280; }
+
+        .book-container { padding: 10px 10px 80px 10px; }
+        .book-header { text-align: center; margin-bottom: 60px; padding-top: 20px; border-bottom: 2px double var(--theme-color); padding-bottom: 40px; }
+        .book-title { font-family: 'Song Myung', serif; font-size: 3rem; color: #1f2937; margin-bottom: 10px; }
+        .book-subtitle { font-family: 'Song Myung', serif; color: var(--theme-color); letter-spacing: 3px; font-size: 0.9rem; }
+        .novel-chapter { margin-bottom: 60px; cursor: pointer; position: relative; }
+        .chapter-edit-hint { position: absolute; top: 0; right: 0; font-size: 0.8rem; color: #d1d5db; opacity: 0; transition: opacity 0.2s; }
+        .novel-chapter:hover .chapter-edit-hint { opacity: 1; }
+        .chapter-header { text-align: center; margin-bottom: 30px; }
+        .chapter-title { font-family: 'Song Myung', serif; font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; text-align: center; }
+        .chapter-content { font-family: 'Song Myung', serif; font-size: 1.1rem; line-height: 2.0; text-align: justify; white-space: pre-wrap; padding: 0 10px; }
+        .chapter-divider { text-align: center; color: var(--theme-color); font-size: 1.2rem; margin: 40px 0; opacity: 0.6; }
+
+        .music-list { display: flex; flex-direction: column; gap: 20px; padding-bottom: 60px; }
+        .music-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; }
+        .music-video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+        .music-video-wrapper iframe { position: absolute; top:0; left:0; width:100%; height:100%; }
+        .music-info { padding: 16px; display: flex; justify-content: space-between; align-items: center; background-color: #fff; }
+
+        .tmi-list { display: flex; flex-direction: column; gap: 20px; padding-bottom: 60px; padding-left: 10px; padding-right: 10px; }
+        .tmi-card { background-color: #fff; border: 1px solid #e5e7eb; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); position: relative; background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"); cursor: pointer; transition: transform 0.2s; }
+        .tmi-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .tmi-tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(1deg); width: 80px; height: 24px; background-color: rgba(255, 255, 255, 0.5); border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 4px rgba(0,0,0,0.1); backdrop-filter: blur(2px); opacity: 0.8; }
+        .tmi-header { font-family: 'Song Myung', serif; font-size: 1.5rem; font-weight: bold; text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e5e7eb; color: #1f2937; letter-spacing: 1px; }
+        .tmi-content { font-family: var(--main-font); font-size: 0.95rem; line-height: 1.8; color: #4b5563; text-align: center; white-space: pre-wrap; margin-bottom: 20px; }
+        .tmi-footer { display: flex; justify-content: flex-end; gap: 10px; font-size: 0.75rem; color: #9ca3af; align-items: center; }
+        .tmi-author { font-weight: bold; color: var(--text-color); }
+
+        .intro-container { padding: 10px; padding-bottom: 60px; }
+        .heart-image-container { width: 140px; height: 120px; clip-path: path('M70 120 C70 120 140 78 140 42 C140 18 122 0 98 0 C82 0 70 18 70 18 C70 18 58 0 42 0 C18 0 0 18 0 42 C0 78 70 120 70 120 Z'); background: var(--theme-light); cursor: pointer; }
+        .photobook-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 30px; }
+        .photobook-item { width: 100%; aspect-ratio: 3 / 4; background: #f3f4f6; border-radius: 8px; overflow: hidden; position: relative; cursor: pointer; }
+        .photobook-item img { width: 100%; height: 100%; object-fit: cover; }
+        .info-split-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .info-block { background-color: rgba(255, 255, 255, 0.6); backdrop-filter: blur(5px); border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; padding: 15px; min-height: 200px; }
+        .info-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; background-color: rgba(255,255,255,0.5); border-radius: 4px; margin-bottom: 8px; }
+        .info-key { font-weight: bold; margin-right: 5px; color: var(--theme-color); font-size: 0.8rem; }
+        .info-val { text-align: right; font-size: 0.8rem; }
+
+        .color-palette { display: flex; gap: 10px; flex-wrap: wrap; }
+        .color-option { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .color-option.selected { border: 2px solid #374151; transform: scale(1.1); }
+        .font-option { padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .font-option.selected { border-color: var(--theme-color); background-color: var(--theme-light); }
+        .style-toggle { padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 20px; cursor: pointer; transition: all 0.2s; background-color: white; font-size: 0.9rem; color: #6b7280; margin-right: 8px; }
+        .style-toggle.active { background-color: var(--theme-color); color: #374151; border-color: var(--theme-color); font-weight: bold; }
+        input[type=range] { width: 100%; accent-color: var(--theme-color); cursor: pointer; }
+        input[type=color] { width: 50px; height: 40px; border: none; background: none; cursor: pointer; }
+        .lightbox-img { max-width: 95%; max-height: 70vh; border-radius: 4px; }
+        .setting-section { margin-bottom: 30px; }
+        .setting-title { font-size: 1rem; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #374151; }
+    </style>
+</head>
+<body class="bg-gray-50 flex justify-center">
+
+    <!-- 1. Login -->
+    <div id="login-screen" class="auth-screen">
+        <h1 class="font-script text-6xl text-gray-800 mb-2">Our Archive</h1>
+        <p class="text-gray-500 mb-8 font-novel">둘만의 이야기를 기록하세요.</p>
+        <button id="google-login-btn" class="flex items-center gap-3 bg-white border border-gray-300 px-6 py-3 rounded-lg shadow-sm hover:bg-gray-50 transition">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-6 h-6">
+            <span class="font-medium">Google 계정으로 시작하기</span>
+        </button>
+    </div>
+
+    <!-- 2. Connect -->
+    <div id="connect-screen" class="auth-screen hidden">
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 max-w-sm w-full text-center">
+            <h2 class="text-2xl font-bold mb-2 font-novel">페어 연결</h2>
+            <p class="text-gray-500 mb-6 text-sm">함께 공유할 초대 코드를 입력하거나<br>새로운 코드를 만드세요.</p>
+            <div class="mb-6">
+                <label class="block text-left text-xs font-bold text-gray-400 mb-1">PAIR CODE</label>
+                <input type="text" id="pair-code-input" placeholder="LOVE-1234" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-center text-lg font-bold tracking-widest uppercase focus:outline-none focus:border-black transition">
+                <p class="text-xs text-gray-400 mt-2 text-left">* 3글자 이상 입력</p>
+            </div>
+            <button id="connect-btn" class="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition">입장하기</button>
+        </div>
+    </div>
+
+    <!-- 3. Main App -->
+    <div id="app-screen" class="app-container w-full hidden">
+        <div class="content-area">
+            
+            <!-- Tab 1: Main -->
+            <div id="tab-main" class="tab-content active">
+                <div class="text-center mb-8 pt-6">
+                    <input type="text" id="main-title" class="font-script text-5xl theme-text drop-shadow-sm text-center bg-transparent outline-none w-full placeholder-opacity-50" value="lovemore" onchange="saveMeta('title', this.value)">
+                    <input type="text" id="main-subtitle" class="text-xs text-gray-400 mt-2 tracking-widest uppercase text-center bg-transparent outline-none w-full" value="Love log" onchange="saveMeta('subtitle', this.value)">
+                </div>
+                <div class="flex items-center justify-between px-2 mb-10">
+                    <div class="flex flex-col items-center">
+                        <div class="profile-img-container group" onclick="document.getElementById('file-char-a').click()">
+                            <img id="img-char-a" src="https://via.placeholder.com/150/e5e7eb/9ca3af?text=A" class="w-full h-full object-cover">
+                        </div>
+                        <input type="text" id="name-a" class="mt-3 text-xs font-bold text-center bg-transparent outline-none w-20 border-b border-transparent focus:border-gray-300" value="Name A" onchange="saveMeta('nameA', this.value)">
+                        <input type="file" id="file-char-a" class="hidden" accept="image/*" onchange="uploadImage(this, 'img-char-a', 'profileA', 300)">
+                    </div>
+                    <div class="flex flex-col items-center justify-center -mt-4 mx-2">
+                        <i class="fas fa-heart theme-text text-xl animate-pulse mb-1"></i>
+                        <span id="d-day-display" class="text-lg font-bold text-gray-700">D+0</span>
+                        <input type="date" id="start-date" class="mt-1 text-[10px] bg-transparent text-gray-400 border rounded px-1 outline-none" onchange="saveMeta('startDate', this.value); calculateDDay()">
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="profile-img-container group" onclick="document.getElementById('file-char-b').click()">
+                            <img id="img-char-b" src="https://via.placeholder.com/150/e5e7eb/9ca3af?text=B" class="w-full h-full object-cover">
+                        </div>
+                        <input type="text" id="name-b" class="mt-3 text-xs font-bold text-center bg-transparent outline-none w-20 border-b border-transparent focus:border-gray-300" value="Name B" onchange="saveMeta('nameB', this.value)">
+                        <input type="file" id="file-char-b" class="hidden" accept="image/*" onchange="uploadImage(this, 'img-char-b', 'profileB', 300)">
+                    </div>
+                </div>
+                <div class="mb-12 px-2">
+                    <div class="flex justify-between text-xs text-gray-400 mb-2 font-medium">
+                        <span id="progress-start-label">Start</span><span id="progress-end-label">100 Days</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="anniversary-bar" class="progress-bar-fill"></div>
+                        <div id="percent-tooltip" class="percent-tooltip" style="left: 0%">0%</div>
+                    </div>
+                    <p id="remaining-days-text" class="text-center text-[10px] text-gray-400 mt-3">다음 기념일까지 함께 달려가는 중! 🏃‍♂️</p>
+                </div>
+                <div class="mb-8">
+                    <div class="main-photo-frame group" onclick="document.getElementById('file-main-photo').click()">
+                        <img id="img-main-photo" src="https://via.placeholder.com/400x300/f3f4f6/d1d5db?text=Touch+to+Add+Photo" class="w-full h-full object-cover">
+                        <input type="file" id="file-main-photo" class="hidden" accept="image/*" onchange="uploadImage(this, 'img-main-photo', 'mainPhoto', 800)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Album -->
+            <div id="tab-album" class="tab-content">
+                <h2 class="font-script text-3xl mb-6 text-center theme-text">Photo Album</h2>
+                <div id="album-grid" class="album-grid"></div>
+                <div class="fab-btn" onclick="openUploadModal()"><i class="fas fa-plus"></i></div>
+            </div>
+
+            <!-- 3. Memo -->
+            <div id="tab-memo" class="tab-content">
+                <h2 class="font-script text-3xl mb-6 text-center theme-text">Memo Pad</h2>
+                <div id="memo-grid" class="memo-grid"></div>
+                <div class="fab-btn" onclick="openMemoModal()"><i class="fas fa-plus"></i></div>
+            </div>
+
+            <!-- 4. Log -->
+            <div id="tab-log" class="tab-content">
+                <div class="book-container">
+                    <div class="book-header"><h1 class="book-title">Our Story</h1><p class="book-subtitle">우리의 모든 순간</p></div>
+                    <div id="novel-book-body"></div>
+                    <div class="fab-btn" onclick="openLogModal()"><i class="fas fa-pen-nib"></i></div>
+                </div>
+            </div>
+
+            <!-- 5. Playlist -->
+            <div id="tab-playlist" class="tab-content">
+                <h2 class="font-script text-3xl mb-6 text-center theme-text">Our Playlist</h2>
+                <div id="playlist-container" class="music-list"></div>
+                <div class="fab-btn" onclick="openMusicModal()"><i class="fas fa-music"></i></div>
+            </div>
+
+            <!-- 6. TMI -->
+            <div id="tab-tmi" class="tab-content">
+                <h2 class="font-script text-3xl mb-6 text-center theme-text">TMI</h2>
+                <div id="tmi-list" class="tmi-list"></div>
+                <div class="fab-btn" onclick="openTmiModal()"><i class="fas fa-plus"></i></div>
+            </div>
+
+            <!-- 7. Settings -->
+            <div id="tab-settings" class="tab-content">
+                <h2 class="text-2xl font-bold mb-6 theme-text"><i class="fas fa-cog mr-2"></i>설정</h2>
+                <div class="setting-section">
+                    <div class="setting-title"><i class="fas fa-palette"></i> 테마 색상</div>
+                    <div class="color-palette">
+                        <div class="color-option selected" style="background:#FFCDC9" data-theme="strawberry" onclick="changeTheme('strawberry', this)"></div>
+                        <div class="color-option" style="background:#C6E7FF" data-theme="cloud" onclick="changeTheme('cloud', this)"></div>
+                        <div class="color-option" style="background:#CDC1FF" data-theme="grape" onclick="changeTheme('grape', this)"></div>
+                        <div class="color-option" style="background:#CBCBCB" data-theme="mono" onclick="changeTheme('mono', this)"></div>
+                    </div>
+                </div>
+                
+                <div class="setting-section">
+                    <div class="setting-title"><i class="fas fa-font"></i> 글씨체</div>
+                    <div id="font-options">
+                        <div class="font-option selected" onclick="changeFont('Noto Sans KR', this)">Noto Sans KR</div>
+                        <div class="font-option" onclick="changeFont('Gowun Dodum', this)">고운돋움</div>
+                        <div class="font-option" onclick="changeFont('Do Hyeon', this)">도현체</div>
+                        <div class="font-option" onclick="changeFont('Song Myung', this)">송명</div>
+                        <div class="font-option" onclick="changeFont('Jua', this)">주아체</div>
+                    </div>
+                </div>
+                
+                <!-- 텍스트 조정 -->
+                <div class="setting-section">
+                    <div class="setting-title"><i class="fas fa-sliders-h"></i>텍스트 조정</div>
+                    <div class="flex gap-2 mb-4">
+                        <button id="btn-bold" class="style-toggle" onclick="toggleStyle('bold', this)">Bold</button>
+                        <button id="btn-italic" class="style-toggle" onclick="toggleStyle('italic', this)">Italic</button>
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-xs text-gray-500 block mb-1">크기 (<span id="size-val">16px</span>)</label>
+                        <input id="input-size" type="range" min="12" max="24" value="16" oninput="updateTypography('size', this.value)">
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-xs text-gray-500 block mb-1">자간 (<span id="spacing-val">0px</span>)</label>
+                        <input id="input-spacing" type="range" min="-2" max="10" value="0" step="0.5" oninput="updateTypography('spacing', this.value)">
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-xs text-gray-500 block mb-1">행간 (<span id="height-val">1.6</span>)</label>
+                        <input id="input-height" type="range" min="1.0" max="3.0" value="1.6" step="0.1" oninput="updateTypography('height', this.value)">
+                    </div>
+                </div>
+
+                <!-- 폰트 색상 선택 -->
+                <div class="setting-section">
+                    <div class="setting-title"><i class="fas fa-fill-drip"></i>글자 색상</div>
+                    <div class="flex items-center gap-4">
+                        <input type="color" id="text-color-picker" value="#374151" onchange="updateTypography('color', this.value)">
+                        <span class="text-sm text-gray-400">클릭하여 색상 변경</span>
+                    </div>
+                </div>
+                
+                <div class="mt-10 pt-6 border-t border-gray-100 text-center">
+                    <p class="text-xs text-gray-400 font-bold">CREATED BY CODE</p>
+                    <a href="https://twitter.com/100D0R" target="_blank" class="text-xs text-blue-400 hover:underline">@100D0R</a>
+                    <button id="logout-btn" class="block mx-auto mt-4 text-xs text-red-400 hover:underline">로그아웃</button>
+                </div>
+
+                <!-- 드림 삭제/초기화 버튼 -->
+                <div class="mt-8 pt-6 border-t border-red-100">
+                    <button id="btn-reset-dream" onclick="resetDream()" class="w-full bg-red-50 text-red-500 py-3 rounded-lg text-sm font-bold hover:bg-red-100 transition shadow-sm border border-red-100">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>드림 삭제 및 초기화
+                    </button>
+                    <p class="text-[10px] text-gray-400 text-center mt-2">모든 기록이 영구적으로 삭제되며 되돌릴 수 없습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <div class="tab-item active" onclick="switchTab('main')"><i class="fas fa-home tab-icon"></i><span>Main</span></div>
+            <div class="tab-item" onclick="switchTab('album')"><i class="fas fa-images tab-icon"></i><span>Album</span></div>
+            <div class="tab-item" onclick="switchTab('memo')"><i class="fas fa-sticky-note tab-icon"></i><span>Memo</span></div>
+            <div class="tab-item" onclick="switchTab('log')"><i class="fas fa-file-alt tab-icon"></i><span>Log</span></div>
+            <div class="tab-item" onclick="switchTab('playlist')"><i class="fas fa-music tab-icon"></i><span>Music</span></div>
+            <div class="tab-item" onclick="switchTab('tmi')"><i class="fas fa-info-circle tab-icon"></i><span>TMI</span></div>
+            <div class="tab-item" onclick="switchTab('settings')"><i class="fas fa-cog tab-icon"></i><span>Set</span></div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Album Modal (Only Photo) -->
+    <div id="upload-modal" class="modal-overlay hidden">
+        <div class="upload-modal-box">
+            <h3 id="upload-modal-title" class="font-bold mb-2">추억 기록</h3>
+            <input type="hidden" id="photo-id"><input type="hidden" id="photo-edit-mode" value="false"><input type="hidden" id="existing-photo-base64">
+            <div class="w-full aspect-[3/4] bg-gray-100 rounded mb-4 overflow-hidden relative border border-dashed border-gray-300 cursor-pointer" onclick="document.getElementById('modal-file-input').click()">
+                <img id="modal-preview" class="w-full h-full object-cover hidden">
+                <div id="modal-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400"><i class="fas fa-camera text-2xl mb-2"></i><span class="text-xs">선택</span></div>
+            </div>
+            <input type="file" id="modal-file-input" class="w-full text-xs mb-2" accept="image/*" onchange="modalPreview(this)">
+            <div class="flex gap-2"><button onclick="closeModal('upload-modal')" class="flex-1 bg-gray-100 py-2 rounded">취소</button><button id="btn-save-polaroid" onclick="savePolaroid()" class="flex-1 bg-black text-white py-2 rounded">등록</button></div>
+        </div>
+    </div>
+
+    <!-- Memo Modal -->
+    <div id="memo-modal" class="modal-overlay hidden">
+        <div class="upload-modal-box">
+            <h3 id="memo-modal-title" class="font-bold mb-2">메모</h3>
+            <input type="hidden" id="memo-id">
+            <div class="mb-3 text-left"><label class="text-xs text-gray-500">작성자</label><input type="text" id="memo-author-input" class="w-full border p-2 mb-2 text-sm"></div>
+            <div class="mb-4 text-left"><label class="text-xs text-gray-500">내용</label><textarea id="memo-content-input" class="w-full border p-2 mb-2 text-sm h-24"></textarea></div>
+            <div class="flex gap-2"><button onclick="closeModal('memo-modal')" class="flex-1 bg-gray-100 py-2 rounded">취소</button><button onclick="deleteMemo()" id="memo-delete-btn" class="hidden flex-1 bg-red-100 text-red-500 py-2 rounded">삭제</button><button id="btn-save-memo" onclick="saveMemo()" class="flex-1 bg-black text-white py-2 rounded">저장</button></div>
+        </div>
+    </div>
+
+    <!-- Music Modal -->
+    <div id="music-modal" class="modal-overlay hidden">
+        <div class="upload-modal-box">
+            <h3 id="music-modal-title" class="font-bold mb-2">음악</h3>
+            <input type="hidden" id="music-id">
+            <div class="mb-3 text-left"><label class="text-xs text-gray-500">제목</label><input type="text" id="music-title-input" class="w-full border p-2 mb-2"></div>
+            <div class="mb-3 text-left"><label class="text-xs text-gray-500">가수</label><input type="text" id="music-artist-input" class="w-full border p-2 mb-2"></div>
+            <div class="mb-4 text-left"><label class="text-xs text-gray-500">URL</label><input type="text" id="music-url-input" class="w-full border p-2 mb-2"></div>
+            <div class="flex gap-2"><button onclick="closeModal('music-modal')" class="flex-1 bg-gray-100 rounded">취소</button><button onclick="deleteMusic()" id="music-delete-btn" class="hidden flex-1 bg-red-100 text-red-500 rounded">삭제</button><button id="btn-save-music" onclick="saveMusic()" class="flex-1 bg-black text-white rounded">저장</button></div>
+        </div>
+    </div>
+
+    <!-- Log Modal -->
+    <div id="log-modal" class="modal-overlay hidden">
+        <div class="full-screen-modal-box">
+            <div class="novel-page-container">
+                <div class="novel-header-deco"><span class="novel-part-label" id="log-part-label">PART</span></div>
+                <input type="text" id="log-title-input" class="novel-title-input" placeholder="제목">
+                <textarea id="log-content-input" class="novel-content-input" placeholder="내용..."></textarea>
+                <div class="novel-footer"><span id="log-date-display">-</span></div>
+                <input type="hidden" id="log-id">
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <button onclick="closeModal('log-modal')" class="text-gray-400 text-sm">닫기</button>
+                    <div class="flex gap-3"><button onclick="deleteLog()" class="hidden text-red-400 text-sm" id="log-delete-btn">삭제</button><button id="btn-save-log" onclick="saveLog()" class="theme-text font-bold text-sm">저장</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TMI Modal -->
+    <div id="tmi-modal" class="modal-overlay hidden">
+        <div class="upload-modal-box">
+            <h3 id="tmi-modal-title" class="text-lg font-bold mb-4 font-novel">TMI Card</h3>
+            <input type="hidden" id="tmi-id">
+            <div class="mb-3 text-left"><label class="text-xs text-gray-500">작성자</label><input type="text" id="tmi-author-input" class="w-full border p-2 text-sm"></div>
+            <div class="mb-4 text-left"><label class="text-xs text-gray-500">내용</label><textarea id="tmi-content-input" class="w-full border p-2 text-sm h-32 resize-none"></textarea></div>
+            <div class="flex gap-2">
+                <button onclick="closeModal('tmi-modal')" class="flex-1 bg-gray-100 py-2 rounded">취소</button>
+                <button onclick="deleteTmi()" id="tmi-delete-btn" class="hidden flex-1 bg-red-100 text-red-500 py-2 rounded">삭제</button>
+                <button id="btn-save-tmi" onclick="saveTmi()" class="flex-1 bg-black text-white py-2 rounded">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox (Edit/Delete added) -->
+    <div id="lightbox-modal" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('lightbox-modal')">
+        <div class="flex flex-col items-center gap-4">
+            <img id="lightbox-img" class="lightbox-img">
+            <div class="flex gap-2"><button onclick="editPhoto()" class="bg-white text-gray-800 px-4 py-2 rounded-full shadow">사진 변경</button><button onclick="deletePhoto()" class="bg-red-500 text-white px-4 py-2 rounded-full shadow">삭제</button><button onclick="closeModal('lightbox-modal')" class="bg-gray-600 text-white px-4 py-2 rounded-full shadow">닫기</button></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAa2SXQ5M5BEVInNSYMn-ZdRAG7D9x1goE",
+            authDomain: "pair-log-system.firebaseapp.com",
+            projectId: "pair-log-system",
+            storageBucket: "pair-log-system.firebasestorage.app",
+            messagingSenderId: "870583876096",
+            appId: "1:870583876096:web:e882d3c6f062a4e239f6e5",
+            measurementId: "G-YKWTHY0EG3"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        let currentUser=null, myPairCode=null, currentPhotoId=null, unsubLogs=null, unsubMeta=null;
+        const screens = { login: document.getElementById('login-screen'), connect: document.getElementById('connect-screen'), app: document.getElementById('app-screen') };
+
+        // Auth & Persistence
+        document.getElementById('google-login-btn').addEventListener('click', () => {
+             auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+                .then(() => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()))
+                .catch(e => alert("로그인 오류: " + e.message));
+        });
+
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                currentUser = user;
+                screens.login.classList.add('hidden');
+                screens.connect.classList.remove('hidden'); // Always start at connect
+            } else {
+                if(unsubLogs) unsubLogs(); if(unsubMeta) unsubMeta(); // Clean listeners
+                currentUser = null; myPairCode = null;
+                screens.login.classList.remove('hidden');
+                screens.connect.classList.add('hidden');
+                screens.app.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => auth.signOut().then(()=>location.reload()));
+        document.getElementById('connect-btn').addEventListener('click', async () => {
+            const code = document.getElementById('pair-code-input').value.trim().toUpperCase();
+            if (code.length < 3) return alert("3글자 이상 입력.");
+            try { await db.collection('users').doc(currentUser.uid).set({email:currentUser.email, pairCode:code}, {merge:true}); myPairCode=code; initApp(); } catch(e){alert("오류:"+e.message);}
+        });
+
+        function initApp() { screens.connect.classList.add('hidden'); screens.app.classList.remove('hidden'); loadMeta(); loadLogs(); }
+
+        // Data
+        function loadMeta() {
+            if(unsubMeta) unsubMeta();
+            unsubMeta = db.collection('couples').doc(myPairCode).onSnapshot(doc => {
+                if(doc.exists) {
+                    const d=doc.data();
+                    if(d.title) document.getElementById('main-title').value=d.title;
+                    if(d.subtitle) document.getElementById('main-subtitle').value=d.subtitle;
+                    if(d.nameA) { document.getElementById('name-a').value=d.nameA; }
+                    if(d.nameB) { document.getElementById('name-b').value=d.nameB; }
+                    if(d.startDate) { document.getElementById('start-date').value=d.startDate; calculateDDay(); }
+                    if(d.mainPhoto) document.getElementById('img-main-photo').src=d.mainPhoto;
+                    if(d.profileA) document.getElementById('img-char-a').src=d.profileA;
+                    if(d.profileB) document.getElementById('img-char-b').src=d.profileB;
+                    
+                    if(d.theme) changeTheme(d.theme, document.querySelector(`.color-option[data-theme="${d.theme}"]`)||document.querySelector('.color-option'));
+                    if(d.font) changeFont(d.font, document.querySelector(`.font-option[data-font="${d.font}"]`)||document.querySelector('.font-option'));
+                    if(d.textSize) updateTypography('size', d.textSize);
+                    if(d.lineHeight) updateTypography('height', d.lineHeight);
+                    if(d.letterSpacing) updateTypography('spacing', d.letterSpacing);
+                    if(d.textColor) updateTypography('color', d.textColor);
+                    if(d.fontWeight) { document.documentElement.style.setProperty('--font-weight', d.fontWeight); if(d.fontWeight==='700') document.getElementById('btn-bold').classList.add('active'); }
+                    if(d.fontStyle) { document.documentElement.style.setProperty('--font-style', d.fontStyle); if(d.fontStyle==='italic') document.getElementById('btn-italic').classList.add('active'); }
+                    if(d.textSize) document.getElementById('input-size').value = parseInt(d.textSize);
+                    if(d.lineHeight) document.getElementById('input-height').value = d.lineHeight;
+                    if(d.letterSpacing) document.getElementById('input-spacing').value = parseInt(d.letterSpacing);
+                    if(d.textColor) document.getElementById('text-color-picker').value = d.textColor;
+                }
+            });
+            // Also load assets for persistence
+            db.collection('couples').doc(myPairCode).collection('assets').onSnapshot(snap => {
+                snap.forEach(doc => {
+                    const key = doc.id; const val = doc.data().image;
+                    const map = {'mainPhoto':'img-main-photo','profileA':'img-char-a','profileB':'img-char-b'};
+                    if(map[key] && val) document.getElementById(map[key]).src = val;
+                });
+            });
+        }
+        const escapeStr = (str) => str ? str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n') : '';
+        function loadLogs() {
+            if(unsubLogs) unsubLogs();
+            unsubLogs = db.collection('logs').where('pairCode','==',myPairCode).onSnapshot(snap => {
+                const logs=[]; snap.forEach(d=>logs.push({id:d.id, ...d.data()}));
+                logs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+                const album=document.getElementById('album-grid'), memo=document.getElementById('memo-grid'), pl=document.getElementById('playlist-container'), novel=document.getElementById('novel-book-body'), tmi=document.getElementById('tmi-list');
+                album.innerHTML=''; memo.innerHTML=''; pl.innerHTML=''; novel.innerHTML=''; tmi.innerHTML='';
+                let count=0;
+                const novels=logs.filter(l=>l.type==='novel').reverse();
+                logs.filter(l=>l.type!=='novel').forEach(l=>{
+                    if(l.type==='photo') album.innerHTML+=`<div class="polaroid" onclick="viewPhoto('${l.id}','${l.image}')"><img src="${l.image}" class="polaroid-img"></div>`;
+                    else if(l.type==='memo') memo.innerHTML+=`<div class="memo-card" onclick="editMemo('${l.id}','${escapeStr(l.author)}','${escapeStr(l.text)}')"><div class="memo-tape"></div><div class="memo-content">${l.text}</div><div class="memo-footer"><span>${l.dateStr}</span><span class="font-bold">${l.author}</span></div></div>`;
+                    else if(l.type==='music') pl.innerHTML+=`<div class="music-card"><div class="music-video-wrapper"><iframe src="https://www.youtube.com/embed/${l.videoId}" frameborder="0"></iframe></div><div class="music-info"><h3>${l.title}</h3><div class="flex gap-2"><button onclick="editMusic('${l.id}','${escapeStr(l.title)}','${escapeStr(l.artist)}','${l.videoId}')"><i class="fas fa-edit text-gray-400"></i></button><button onclick="deleteMusic('${l.id}')"><i class="fas fa-trash text-red-300"></i></button></div></div></div>`;
+                    else if(l.type==='tmi') tmi.innerHTML+=`<div class="tmi-card" onclick="editTmi('${l.id}','${escapeStr(l.author)}','${escapeStr(l.text)}')"><div class="tmi-tape"></div><div class="tmi-header">TMI</div><div class="tmi-content">${l.text}</div><div class="tmi-footer"><span class="tmi-author">${l.author}</span><span>${l.dateStr}</span></div></div>`;
+                });
+                novels.forEach(l => novel.innerHTML+=`<div class="novel-chapter" onclick="editLog('${l.id}','${escapeStr(l.title)}','${escapeStr(l.text)}')"><div class="chapter-header"><span class="chapter-number">Chapter ${++count}</span><h2 class="chapter-title">${l.title}</h2></div><div class="chapter-content">${l.text}</div><div class="chapter-divider">✻</div></div>`);
+            });
+        }
+
+        // Logic
+        function compressImage(file, maxWidth, quality, callback) {
+            const reader=new FileReader(); reader.readAsDataURL(file);
+            reader.onload=e=>{ const img=new Image(); img.src=e.target.result;
+                img.onload=()=>{ const c=document.createElement('canvas'); let w=img.width, h=img.height; if(w>maxWidth){h=Math.round(h*(maxWidth/w)); w=maxWidth;} c.width=w; c.height=h; const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,w,h); callback(c.toDataURL('image/jpeg',quality)); }
+            };
+        }
+        async function saveMeta(k,v){ try{ await db.collection('couples').doc(myPairCode).set({[k]:v},{merge:true}); }catch(e){console.error(e);} }
+        function uploadImage(i,d,f,w=600){ if(i.files[0]) compressImage(i.files[0],w,0.7,async(b)=>{ document.getElementById(d).src=b; await db.collection('couples').doc(myPairCode).collection('assets').doc(f).set({image:b}); }); }
+        function calculateDDay(){ const v=document.getElementById('start-date').value; if(!v)return; const d=Math.floor((new Date()-new Date(v))/(1000*60*60*24)); document.getElementById('d-day-display').innerText=`D+${d+1}`; const n=Math.ceil((d+1)/100)*100; document.getElementById('progress-start-label').innerText=`D+${n-100}`; document.getElementById('progress-end-label').innerText=`D+${n}`; const p=((d+1)-(n-100))/100*100; document.getElementById('anniversary-bar').style.width=`${p}%`; document.getElementById('percent-tooltip').style.left=`${p}%`; document.getElementById('percent-tooltip').innerText=`${Math.round(p)}%`; }
+        function switchTab(t){ document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.getElementById('tab-'+t).classList.add('active'); document.querySelectorAll('.tab-item').forEach(i=>i.classList.remove('active')); event.currentTarget.classList.add('active'); }
+        
+        // Modal Helpers
+        function closeModal(id){ const m=document.getElementById(id); m.classList.remove('open'); setTimeout(()=>m.classList.add('hidden'),300); }
+        function openModal(id){ const m=document.getElementById(id); m.classList.remove('hidden'); setTimeout(()=>m.classList.add('open'),10); }
+        
+        // Album
+        function openUploadModal(){ openModal('upload-modal'); document.getElementById('upload-modal-title').innerText='추억 기록'; document.getElementById('photo-edit-mode').value='false'; document.getElementById('photo-id').value=''; document.getElementById('existing-photo-base64').value=''; document.getElementById('modal-file-input').value=''; document.getElementById('modal-preview').classList.add('hidden'); document.getElementById('modal-placeholder').classList.remove('hidden'); document.getElementById('btn-save-polaroid').innerText='등록'; }
+        function savePolaroid(){
+            const f=document.getElementById('modal-file-input').files[0], isEdit=document.getElementById('photo-edit-mode').value==='true', id=document.getElementById('photo-id').value, ex=document.getElementById('existing-photo-base64').value;
+            const save=async(img)=>{ try{ if(isEdit) await db.collection('logs').doc(id).update({image:img}); else await db.collection('logs').add({pairCode:myPairCode, type:'photo', image:img, text:'', createdAt:new Date()}); closeModal('upload-modal'); }catch(e){alert("실패:"+e.message);} };
+            if(f) compressImage(f,800,0.7,save); else if(isEdit) save(ex); else alert('사진 필요');
+        }
+        function viewPhoto(id,src){ currentPhotoId=id; document.getElementById('lightbox-img').src=src; openModal('lightbox-modal'); }
+        function editPhoto(){ closeModal('lightbox-modal'); openUploadModal(); document.getElementById('upload-modal-title').innerText='사진 변경'; document.getElementById('photo-edit-mode').value='true'; document.getElementById('photo-id').value=currentPhotoId; document.getElementById('existing-photo-base64').value=document.getElementById('lightbox-img').src; document.getElementById('modal-preview').src=document.getElementById('lightbox-img').src; document.getElementById('modal-preview').classList.remove('hidden'); document.getElementById('modal-placeholder').classList.add('hidden'); document.getElementById('btn-save-polaroid').innerText='수정 완료'; }
+        async function deletePhoto(){ if(confirm('삭제?')){ await db.collection('logs').doc(currentPhotoId).delete(); closeModal('lightbox-modal'); } }
+        
+        // Memo
+        function openMemoModal(){ openModal('memo-modal'); document.getElementById('memo-modal-title').innerText='새 메모'; document.getElementById('memo-id').value=''; document.getElementById('memo-author-input').value=''; document.getElementById('memo-content-input').value=''; document.getElementById('memo-delete-btn').classList.add('hidden'); }
+        function editMemo(id,a,t){ openModal('memo-modal'); document.getElementById('memo-modal-title').innerText='메모 수정'; document.getElementById('memo-id').value=id; document.getElementById('memo-author-input').value=a; document.getElementById('memo-content-input').value=t; document.getElementById('memo-delete-btn').classList.remove('hidden'); }
+        async function saveMemo(){
+            const id=document.getElementById('memo-id').value, a=document.getElementById('memo-author-input').value, t=document.getElementById('memo-content-input').value;
+            if(!t) return alert('내용 입력');
+            const d={pairCode:myPairCode, type:'memo', author:a, text:t, dateStr:new Date().toLocaleDateString(), createdAt:new Date()};
+            if(id) await db.collection('logs').doc(id).update(d); else await db.collection('logs').add(d);
+            closeModal('memo-modal');
+        }
+        async function deleteMemo(){ const id=document.getElementById('memo-id').value; if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('memo-modal'); }
+        
+        // Log
+        function openLogModal(){ openModal('log-modal'); document.getElementById('log-id').value=''; document.getElementById('log-title-input').value=''; document.getElementById('log-content-input').value=''; document.getElementById('log-date-display').innerText='-'; document.getElementById('log-delete-btn').classList.add('hidden'); }
+        function editLog(id,t,c){ openModal('log-modal'); document.getElementById('log-id').value=id; document.getElementById('log-title-input').value=t; document.getElementById('log-content-input').value=c; document.getElementById('log-delete-btn').classList.remove('hidden'); }
+        async function saveLog(){
+            const id=document.getElementById('log-id').value, t=document.getElementById('log-title-input').value, c=document.getElementById('log-content-input').value;
+            if(!t || !c) return alert('입력 확인');
+            const d={pairCode:myPairCode, type:'novel', title:t, text:c, dateStr:new Date().toLocaleDateString(), createdAt:new Date()};
+            if(id) await db.collection('logs').doc(id).update(d); else await db.collection('logs').add(d);
+            closeModal('log-modal');
+        }
+        async function deleteLog(){ const id=document.getElementById('log-id').value; if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('log-modal'); }
+
+        // Music
+        function openMusicModal(){ openModal('music-modal'); document.getElementById('music-id').value=''; document.getElementById('music-title-input').value=''; document.getElementById('music-artist-input').value=''; document.getElementById('music-url-input').value=''; document.getElementById('music-delete-btn').classList.add('hidden'); }
+        function editMusic(id,t,a,v){ openModal('music-modal'); document.getElementById('music-id').value=id; document.getElementById('music-title-input').value=t; document.getElementById('music-artist-input').value=a; document.getElementById('music-url-input').value='https://youtu.be/'+v; document.getElementById('music-delete-btn').classList.remove('hidden'); }
+        async function saveMusic(){
+            const u=document.getElementById('music-url-input').value, t=document.getElementById('music-title-input').value, a=document.getElementById('music-artist-input').value, id=document.getElementById('music-id').value;
+            let v=''; if(u.includes('v=')) v=u.split('v=')[1].substring(0,11); else if(u.includes('youtu.be/')) v=u.split('youtu.be/')[1].substring(0,11);
+            if(!t || !v) return alert('필수 입력');
+            const d={pairCode:myPairCode, type:'music', title:t, artist:a, videoId:v, createdAt:new Date()};
+            if(id) await db.collection('logs').doc(id).update(d); else await db.collection('logs').add(d);
+            closeModal('music-modal');
+        }
+        async function deleteMusic(id){ if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('music-modal'); }
+
+        // TMI
+        function openTmiModal(){ openModal('tmi-modal'); document.getElementById('tmi-id').value=''; document.getElementById('tmi-author-input').value=''; document.getElementById('tmi-content-input').value=''; document.getElementById('tmi-delete-btn').classList.add('hidden'); }
+        function editTmi(id,a,t){ openModal('tmi-modal'); document.getElementById('tmi-id').value=id; document.getElementById('tmi-author-input').value=a; document.getElementById('tmi-content-input').value=t; document.getElementById('tmi-delete-btn').classList.remove('hidden'); }
+        async function saveTmi(){
+            const id=document.getElementById('tmi-id').value, a=document.getElementById('tmi-author-input').value, t=document.getElementById('tmi-content-input').value;
+            if(!t) return alert('내용 입력');
+            const d={pairCode:myPairCode, type:'tmi', author:a, text:t, dateStr:new Date().toLocaleDateString(), createdAt:new Date()};
+            if(id) await db.collection('logs').doc(id).update(d); else await db.collection('logs').add(d);
+            closeModal('tmi-modal');
+        }
+        async function deleteTmi(){ const id=document.getElementById('tmi-id').value; if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('tmi-modal'); }
+
+        async function resetDream(){ if(confirm("초기화?")){ const s=await db.collection('logs').where('pairCode','==',myPairCode).get(); s.forEach(d=>d.ref.delete()); const a=await db.collection('couples').doc(myPairCode).collection('assets').get(); a.forEach(d=>d.ref.delete()); await db.collection('couples').doc(myPairCode).delete(); await db.collection('users').doc(currentUser.uid).update({pairCode:firebase.firestore.FieldValue.delete()}); location.reload(); } }
+
+        // Utils
+        function changeTheme(t,e){ const r=document.documentElement.style; document.querySelectorAll('.color-option').forEach(o=>o.classList.remove('selected')); e.classList.add('selected'); saveMeta('theme',t);
+            if(t=='strawberry'){r.setProperty('--theme-color','#FFCDC9');r.setProperty('--bg-color','#FFFAFA');} if(t=='cloud'){r.setProperty('--theme-color','#C6E7FF');r.setProperty('--bg-color','#F8FCFF');} if(t=='grape'){r.setProperty('--theme-color','#CDC1FF');r.setProperty('--bg-color','#FAF9FF');} if(t=='mono'){r.setProperty('--theme-color','#CBCBCB');r.setProperty('--bg-color','#FAFAFA');} }
+        function changeFont(n,e){ document.documentElement.style.setProperty('--main-font',n); document.querySelectorAll('.font-option').forEach(o=>o.classList.remove('selected')); e.classList.add('selected'); saveMeta('font',n); }
+        function updateTypography(t,v){ const r=document.documentElement.style; if(t=='size'){r.setProperty('--base-font-size',v+'px'); saveMeta('textSize',v);} else if(t=='height'){r.setProperty('--line-height',v); saveMeta('lineHeight',v);} else if(t=='spacing'){r.setProperty('--letter-spacing',v+'px'); saveMeta('letterSpacing',v);} else if(t=='color'){r.setProperty('--text-color',v); saveMeta('textColor',v);} }
+        function toggleStyle(s,b){ const r=document.documentElement.style; b.classList.toggle('active'); const a=b.classList.contains('active'); if(s=='bold'){r.setProperty('--font-weight',a?'700':'400'); saveMeta('fontWeight',a?'700':'400');} else{r.setProperty('--font-style',a?'italic':'normal'); saveMeta('fontStyle',a?'italic':'normal');} }
+        function modalPreview(i){ if(i.files[0]) compressImage(i.files[0],600,0.7,b=>{document.getElementById('modal-preview').src=b; document.getElementById('modal-preview').classList.remove('hidden'); document.getElementById('modal-placeholder').classList.add('hidden');}); }
+    </script>
+</body>
+</html>
