@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OUR ARCHIVE - Music Player Fixed</title>
+    <title>OUR ARCHIVE - Final UX Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@300;400;700&family=Gowun+Dodum&family=Gaegu&family=Do+Hyeon&family=Song+Myung&family=Jua&display=swap" rel="stylesheet">
@@ -72,8 +71,6 @@
         .full-screen-modal-box { background: white; width: 100%; height: 100%; max-width: 600px; display: flex; flex-direction: column; transform: translateY(100%); transition: 0.3s; }
         .modal-overlay.open .full-screen-modal-box { transform: translateY(0); }
         
-        .novel-page-container { width: 100%; height: 100%; background-color: #fff; padding: 40px 30px; overflow-y: auto; }
-
         /* 진행바 */
         .progress-bar-bg { width: 100%; background-color: #e5e7eb; border-radius: 9999px; height: 10px; position: relative; overflow: hidden; }
         .progress-bar-fill { height: 100%; background-color: var(--theme-color); transition: width 1s ease-in-out; width: 0%; border-radius: 9999px; }
@@ -100,6 +97,7 @@
         .author-mini-img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.1); background-color: #ddd; }
         .author-mini-name { font-weight: bold; color: var(--text-color); font-size: 0.75rem; }
 
+        /* LOG VIEW (List) */
         .book-container { padding: 10px 10px 80px 10px; }
         .book-header { text-align: center; margin-bottom: 60px; padding-top: 20px; border-bottom: 2px double var(--theme-color); padding-bottom: 40px; }
         .book-title { font-family: 'Song Myung', serif; font-size: 3rem; color: #1f2937; margin-bottom: 10px; }
@@ -110,6 +108,18 @@
         .chapter-meta { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 20px; opacity: 0.6; font-size: 0.8rem; }
         .chapter-content { font-family: 'Song Myung', serif; font-size: 1.1rem; line-height: 2.0; text-align: justify; white-space: pre-wrap; padding: 0 10px; }
         .chapter-divider { text-align: center; color: var(--theme-color); font-size: 1.2rem; margin: 40px 0; opacity: 0.6; }
+
+        /* LOG EDITOR (Memo App Style) */
+        .log-editor-wrapper { display: flex; flex-direction: column; height: 100%; padding: 20px; background-color: #fff; }
+        .log-editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .log-input-title {
+            width: 100%; font-size: 1.5rem; font-weight: bold; border: none; border-bottom: 1px solid #f3f4f6; 
+            padding: 10px 0; margin-bottom: 15px; outline: none; background: transparent; font-family: var(--main-font);
+        }
+        .log-input-content {
+            width: 100%; flex-grow: 1; border: none; outline: none; resize: none; 
+            font-size: 1rem; line-height: 1.7; background: transparent; font-family: var(--main-font); color: #374151;
+        }
 
         .music-list { display: flex; flex-direction: column; gap: 20px; padding-bottom: 60px; }
         .music-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; }
@@ -151,12 +161,13 @@
         .profile-sub-tab { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #9ca3af; cursor: pointer; transition: 0.3s; background: #fff; }
         .profile-sub-tab:hover { background-color: #f9fafb; }
         .profile-sub-tab.active { color: var(--text-color); font-weight: bold; border-top: 2px solid var(--theme-color); background-color: var(--theme-light); }
-        .profile-sub-tab input { background: transparent; border: none; text-align: center; width: 80%; outline: none; cursor: pointer; }
+        /* [FIX] 프로필 탭 이름 입력 제거 - 단순 텍스트 */
+        .profile-sub-tab span { pointer-events: none; }
         
         .identity-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; border: 1px solid #e5e7eb; margin-bottom: 20px; }
         .identity-badge.active { background-color: var(--theme-color); color: white; border-color: var(--theme-color); font-weight: bold; }
 
-        /* [NEW] 프로필 뮤직 플레이어 스타일 */
+        /* 프로필 뮤직 플레이어 스타일 */
         .music-player-card {
             background-color: #f5f5f5; /* Light Gray like image */
             border-radius: 24px;
@@ -178,12 +189,11 @@
             position: relative;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        /* iframe이 원을 꽉 채우도록 */
         .music-circle-mask iframe {
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            transform: scale(1.35); /* 약간 확대해서 레터박스 제거 */
+            transform: scale(1.35); 
         }
         .player-controls {
             display: flex;
@@ -334,10 +344,10 @@
                     </div>
                     <div class="profile-bottom-nav">
                         <div id="sub-tab-a" class="profile-sub-tab active" onclick="switchProfileSub('A')">
-                            <input type="text" id="tab-name-a" value="Profile A" onchange="saveMeta('tabNameA', this.value); event.stopPropagation();" onclick="this.focus(); event.stopPropagation();">
+                            <span id="tab-label-a">Profile A</span>
                         </div>
                         <div id="sub-tab-b" class="profile-sub-tab" onclick="switchProfileSub('B')">
-                            <input type="text" id="tab-name-b" value="Profile B" onchange="saveMeta('tabNameB', this.value); event.stopPropagation();" onclick="this.focus(); event.stopPropagation();">
+                            <span id="tab-label-b">Profile B</span>
                         </div>
                     </div>
                 </div>
@@ -483,16 +493,18 @@
 
     <div id="log-modal" class="modal-overlay hidden">
         <div class="full-screen-modal-box">
-            <div class="novel-page-container">
-                <div class="novel-header-deco"><span class="novel-part-label" id="log-part-label">PART</span></div>
-                <input type="text" id="log-title-input" class="novel-title-input" placeholder="제목">
-                <textarea id="log-content-input" class="novel-content-input" placeholder="내용..."></textarea>
-                <div class="novel-footer"><span id="log-date-display">-</span></div>
-                <input type="hidden" id="log-id">
-                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
-                    <button onclick="closeModal('log-modal')" class="text-gray-400 text-sm">닫기</button>
-                    <div class="flex gap-3"><button onclick="deleteLog()" class="hidden text-red-400 text-sm" id="log-delete-btn">삭제</button><button id="btn-save-log" onclick="saveLog()" class="theme-text font-bold text-sm">저장</button></div>
+            <div class="log-editor-wrapper">
+                <div class="log-editor-header">
+                    <button onclick="closeModal('log-modal')" class="text-gray-400 text-sm">취소</button>
+                    <span class="font-bold">글 쓰기</span>
+                    <button id="btn-save-log" onclick="saveLog()" class="theme-text font-bold text-sm">완료</button>
                 </div>
+                <input type="text" id="log-title-input" class="log-input-title" placeholder="제목">
+                <textarea id="log-content-input" class="log-input-content" placeholder="내용을 입력하세요..."></textarea>
+                <div class="text-right mt-2">
+                    <button onclick="deleteLog()" class="hidden text-red-400 text-xs" id="log-delete-btn">삭제</button>
+                </div>
+                <input type="hidden" id="log-id">
             </div>
         </div>
     </div>
@@ -540,19 +552,14 @@
         let myIdentity = null; 
         const screens = { login: document.getElementById('login-screen'), connect: document.getElementById('connect-screen'), app: document.getElementById('app-screen') };
 
-        // [NEW] YouTube API Load
+        // YouTube API
         let tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         let firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
         let player;
         let isPlayerReady = false;
-
-        function onYouTubeIframeAPIReady() {
-            // API Loaded, wait for init call
-            isPlayerReady = true;
-        }
+        function onYouTubeIframeAPIReady() { isPlayerReady = true; }
 
         // Auth
         document.getElementById('google-login-btn').addEventListener('click', () => {
@@ -612,8 +619,6 @@
                     if(d.profileB) document.getElementById('main-char-b-img').src=d.profileB;
                     if(d.nameA) document.getElementById('main-char-a-name').innerText=d.nameA;
                     if(d.nameB) document.getElementById('main-char-b-name').innerText=d.nameB;
-                    if(d.tabNameA) document.getElementById('tab-name-a').value = d.tabNameA;
-                    if(d.tabNameB) document.getElementById('tab-name-b').value = d.tabNameB;
                     
                     renderProfileContent();
                     renderLogs(cachedLogs);
@@ -659,16 +664,17 @@
             document.getElementById('profile-desc-input').value = desc;
             document.getElementById('profile-song-url').value = song;
             
-            // [NEW] Call Player Update
+            // [FIX] 하단 탭 이름 자동 동기화
+            document.getElementById('tab-label-a').innerText = coupleData.nameA || 'Profile A';
+            document.getElementById('tab-label-b').innerText = coupleData.nameB || 'Profile B';
+
             updatePlayer(song);
-            
             updateIdentityBadge();
         }
 
         function saveCurrentProfile(field, value) { saveMeta(field + currentProfileTab, value); }
         function updateProfileSong(url) { saveCurrentProfile('song', url); updatePlayer(url); }
 
-        // [NEW] YouTube Player Logic with API
         function updatePlayer(url) {
             const container = document.getElementById('profile-player-container');
             let v = '';
@@ -682,22 +688,13 @@
                 if(player && typeof player.loadVideoById === 'function') {
                     player.loadVideoById(v);
                 } else {
-                    // Create Player
-                    // Need to wait slightly if API isn't fully ready, but usually on page load it is.
-                    // If div replaced, create new on the ID
                     if(document.getElementById('youtube-player-placeholder')) {
                         player = new YT.Player('youtube-player-placeholder', {
                             height: '100%',
                             width: '100%',
                             videoId: v,
-                            playerVars: {
-                                'playsinline': 1,
-                                'controls': 0, // Hide default controls
-                                'modestbranding': 1
-                            },
-                            events: {
-                                'onStateChange': onPlayerStateChange
-                            }
+                            playerVars: { 'playsinline': 1, 'controls': 0, 'modestbranding': 1 },
+                            events: { 'onStateChange': onPlayerStateChange }
                         });
                     }
                 }
@@ -710,11 +707,8 @@
         function togglePlay() {
             if(!player) return;
             const state = player.getPlayerState();
-            if(state === YT.PlayerState.PLAYING) {
-                player.pauseVideo();
-            } else {
-                player.playVideo();
-            }
+            if(state === YT.PlayerState.PLAYING) player.pauseVideo();
+            else player.playVideo();
         }
 
         function seekPlayer(seconds) {
@@ -925,7 +919,7 @@
         }
         async function deleteMemo(){ const id=document.getElementById('memo-id').value; if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('memo-modal'); }
         
-        // Log (Updated)
+        // Log (Fixed UI)
         function openLogModal(){ openModal('log-modal'); document.getElementById('log-id').value=''; document.getElementById('log-title-input').value=''; document.getElementById('log-content-input').value=''; document.getElementById('log-date-display').innerText='-'; document.getElementById('log-delete-btn').classList.add('hidden'); }
         function editLog(id,t,c){ openModal('log-modal'); document.getElementById('log-id').value=id; document.getElementById('log-title-input').value=t; document.getElementById('log-content-input').value=c; document.getElementById('log-delete-btn').classList.remove('hidden'); }
         async function saveLog(){
