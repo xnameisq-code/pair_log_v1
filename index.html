@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OUR ARCHIVE - Final Fixed</title>
+    <title>OUR ARCHIVE - Music Player Fixed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@300;400;700&family=Gowun+Dodum&family=Gaegu&family=Do+Hyeon&family=Song+Myung&family=Jua&display=swap" rel="stylesheet">
@@ -43,7 +44,7 @@
         .app-container { display: flex; min-height: 100vh; max-width: 600px; margin: 0 auto; background-color: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.05); position: relative; }
         .content-area { flex-grow: 1; padding-bottom: 40px; min-height: 100vh; background-color: #fff; overflow-y: auto; position: relative; }
         
-        .tab-bar { width: 70px; background-color: #ffffff; border-left: 1px solid #f3f4f6; display: flex; flex-direction: column; align-items: center; padding-top: 20px; z-index: 50; flex-shrink: 0; }
+        .tab-bar { width: 70px; background-color: #ffffff; border-left: 1px solid #f3f4f6; display: flex; flex-direction: column; align-items: center; padding-top: 20px; z-index: 50; flex-shrink: 0; position: sticky; top: 0; height: 100vh; }
         .tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #d1d5db; font-size: 0.65rem; cursor: pointer; transition: all 0.2s; width: 100%; height: 70px; margin-bottom: 8px; }
         .tab-item.active { color: var(--theme-color); font-weight: bold; }
         .tab-item.active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 60%; background-color: var(--theme-color); border-radius: 0 4px 4px 0; }
@@ -87,23 +88,26 @@
         .polaroid { background: white; padding: 8px 8px 35px 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s; cursor: pointer; }
         .polaroid:hover { transform: scale(1.05) rotate(1deg); z-index: 10; }
         .polaroid-img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; background: #eee; }
-        .polaroid-caption { position: absolute; bottom: 5px; width: 100%; text-align: center; left:0; font-family: var(--main-font); font-size: 1.1rem; }
         
         .memo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding-bottom: 60px; }
-        .memo-card { background: var(--theme-light); padding: 20px 15px; border-radius: 4px; position: relative; min-height: 140px; cursor: pointer; background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 15px 15px; }
+        .memo-card { background: var(--theme-light); padding: 20px 15px; border-radius: 4px; position: relative; min-height: 140px; cursor: pointer; background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 15px 15px; display: flex; flex-direction: column; }
         .memo-tape { position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 40%; height: 18px; background: rgba(255,255,255,0.4); backdrop-filter: blur(2px); }
         .memo-content { font-family: var(--main-font); font-size: 0.9rem; flex-grow: 1; margin-bottom: 10px; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
         .memo-footer { border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: #6b7280; }
+
+        /* 작성자 프로필 미니 */
+        .author-mini-box { display: flex; align-items: center; gap: 6px; }
+        .author-mini-img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.1); background-color: #ddd; }
+        .author-mini-name { font-weight: bold; color: var(--text-color); font-size: 0.75rem; }
 
         .book-container { padding: 10px 10px 80px 10px; }
         .book-header { text-align: center; margin-bottom: 60px; padding-top: 20px; border-bottom: 2px double var(--theme-color); padding-bottom: 40px; }
         .book-title { font-family: 'Song Myung', serif; font-size: 3rem; color: #1f2937; margin-bottom: 10px; }
         .book-subtitle { font-family: 'Song Myung', serif; color: var(--theme-color); letter-spacing: 3px; font-size: 0.9rem; }
         .novel-chapter { margin-bottom: 60px; cursor: pointer; position: relative; }
-        .chapter-edit-hint { position: absolute; top: 0; right: 0; font-size: 0.8rem; color: #d1d5db; opacity: 0; transition: opacity 0.2s; }
-        .novel-chapter:hover .chapter-edit-hint { opacity: 1; }
-        .chapter-header { text-align: center; margin-bottom: 30px; }
-        .chapter-title { font-family: 'Song Myung', serif; font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; text-align: center; }
+        .chapter-header { text-align: center; margin-bottom: 20px; }
+        .chapter-title { font-family: 'Song Myung', serif; font-size: 1.8rem; font-weight: bold; margin-bottom: 6px; text-align: center; }
+        .chapter-meta { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 20px; opacity: 0.6; font-size: 0.8rem; }
         .chapter-content { font-family: 'Song Myung', serif; font-size: 1.1rem; line-height: 2.0; text-align: justify; white-space: pre-wrap; padding: 0 10px; }
         .chapter-divider { text-align: center; color: var(--theme-color); font-size: 1.2rem; margin: 40px 0; opacity: 0.6; }
 
@@ -111,7 +115,9 @@
         .music-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; }
         .music-video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
         .music-video-wrapper iframe { position: absolute; top:0; left:0; width:100%; height:100%; }
-        .music-info { padding: 16px; display: flex; justify-content: space-between; align-items: center; background-color: #fff; }
+        .music-info { padding: 16px; display: flex; flex-direction: column; gap: 8px; background-color: #fff; }
+        .music-top-row { display: flex; justify-content: space-between; align-items: flex-start; }
+        .music-recommender { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #9ca3af; background: #f9fafb; padding: 4px 8px; border-radius: 12px; align-self: flex-start; }
 
         .tmi-list { display: flex; flex-direction: column; gap: 20px; padding-bottom: 60px; padding-left: 10px; padding-right: 10px; }
         .tmi-card { background-color: #fff; border: 1px solid #e5e7eb; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); position: relative; background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E"); cursor: pointer; transition: transform 0.2s; }
@@ -119,19 +125,7 @@
         .tmi-tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(1deg); width: 80px; height: 24px; background-color: rgba(255, 255, 255, 0.5); border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 4px rgba(0,0,0,0.1); backdrop-filter: blur(2px); opacity: 0.8; }
         .tmi-header { font-family: 'Song Myung', serif; font-size: 1.5rem; font-weight: bold; text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e5e7eb; color: #1f2937; letter-spacing: 1px; }
         .tmi-content { font-family: var(--main-font); font-size: 0.95rem; line-height: 1.8; color: #4b5563; text-align: center; white-space: pre-wrap; margin-bottom: 20px; }
-        .tmi-footer { display: flex; justify-content: flex-end; gap: 10px; font-size: 0.75rem; color: #9ca3af; align-items: center; }
-        .tmi-author { font-weight: bold; color: var(--text-color); }
-
-        .intro-container { padding: 10px; padding-bottom: 60px; }
-        .heart-image-container { width: 140px; height: 120px; clip-path: path('M70 120 C70 120 140 78 140 42 C140 18 122 0 98 0 C82 0 70 18 70 18 C70 18 58 0 42 0 C18 0 0 18 0 42 C0 78 70 120 70 120 Z'); background: var(--theme-light); cursor: pointer; }
-        .photobook-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 30px; }
-        .photobook-item { width: 100%; aspect-ratio: 3 / 4; background: #f3f4f6; border-radius: 8px; overflow: hidden; position: relative; cursor: pointer; }
-        .photobook-item img { width: 100%; height: 100%; object-fit: cover; }
-        .info-split-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .info-block { background-color: rgba(255, 255, 255, 0.6); backdrop-filter: blur(5px); border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; padding: 15px; min-height: 200px; }
-        .info-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; background-color: rgba(255,255,255,0.5); border-radius: 4px; margin-bottom: 8px; }
-        .info-key { font-weight: bold; margin-right: 5px; color: var(--theme-color); font-size: 0.8rem; }
-        .info-val { text-align: right; font-size: 0.8rem; }
+        .tmi-footer { display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.75rem; color: #9ca3af; }
 
         .color-palette { display: flex; gap: 10px; flex-wrap: wrap; }
         .color-option { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
@@ -145,11 +139,90 @@
         .lightbox-img { max-width: 95%; max-height: 70vh; border-radius: 4px; }
         .setting-section { margin-bottom: 30px; }
         .setting-title { font-size: 1rem; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #374151; }
+
+        /* 프로필 탭 전용 스타일 */
+        .profile-container { height: 100%; display: flex; flex-direction: column; }
+        .profile-view-area { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; }
+        .profile-header-img { width: 100%; aspect-ratio: 16/9; border-radius: 12px; object-fit: cover; background-color: #f3f4f6; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .profile-input-name { text-align: center; width: 100%; font-size: 1.5rem; font-weight: bold; margin-top: 20px; background: transparent; border: none; outline: none; border-bottom: 1px solid transparent; transition: 0.3s; }
+        .profile-input-name:focus { border-bottom: 1px solid var(--theme-color); }
+        .profile-input-desc { width: 100%; text-align: center; margin-top: 15px; background: transparent; border: none; outline: none; resize: none; min-height: 100px; font-size: 0.9rem; color: #6b7280; line-height: 1.8; }
+        .profile-bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; display: flex; border-top: 1px solid #f3f4f6; background: white; }
+        .profile-sub-tab { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #9ca3af; cursor: pointer; transition: 0.3s; background: #fff; }
+        .profile-sub-tab:hover { background-color: #f9fafb; }
+        .profile-sub-tab.active { color: var(--text-color); font-weight: bold; border-top: 2px solid var(--theme-color); background-color: var(--theme-light); }
+        .profile-sub-tab input { background: transparent; border: none; text-align: center; width: 80%; outline: none; cursor: pointer; }
+        
+        .identity-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; border: 1px solid #e5e7eb; margin-bottom: 20px; }
+        .identity-badge.active { background-color: var(--theme-color); color: white; border-color: var(--theme-color); font-weight: bold; }
+
+        /* [NEW] 프로필 뮤직 플레이어 스타일 */
+        .music-player-card {
+            background-color: #f5f5f5; /* Light Gray like image */
+            border-radius: 24px;
+            padding: 24px 16px;
+            width: 220px;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .music-circle-mask {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        /* iframe이 원을 꽉 채우도록 */
+        .music-circle-mask iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            transform: scale(1.35); /* 약간 확대해서 레터박스 제거 */
+        }
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .control-btn {
+            color: #9ca3af;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1.2rem;
+        }
+        .control-btn:hover { color: #374151; }
+        .play-btn {
+            font-size: 1.8rem;
+            color: #4b5563;
+        }
+        .play-btn:hover { color: #1f2937; transform: scale(1.1); }
+        
+        .player-progress-bar {
+            width: 80%;
+            height: 4px;
+            background-color: #e5e7eb;
+            border-radius: 2px;
+            position: relative;
+        }
+        .player-progress-fill {
+            width: 30%; /* 장식용 고정 */
+            height: 100%;
+            background-color: #9ca3af;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body class="bg-gray-50 flex justify-center">
 
-    <!-- 1. Login -->
     <div id="login-screen" class="auth-screen">
         <h1 class="font-script text-6xl text-gray-800 mb-2">Our Archive</h1>
         <p class="text-gray-500 mb-8 font-novel">둘만의 이야기를 기록하세요.</p>
@@ -159,7 +232,6 @@
         </button>
     </div>
 
-    <!-- 2. Connect -->
     <div id="connect-screen" class="auth-screen hidden">
         <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 max-w-sm w-full text-center">
             <h2 class="text-2xl font-bold mb-2 font-novel">페어 연결</h2>
@@ -173,35 +245,31 @@
         </div>
     </div>
 
-    <!-- 3. Main App -->
     <div id="app-screen" class="app-container w-full hidden">
         <div class="content-area">
             
-            <!-- Tab 1: Main -->
             <div id="tab-main" class="tab-content active">
                 <div class="text-center mb-8 pt-6">
                     <input type="text" id="main-title" class="font-script text-5xl theme-text drop-shadow-sm text-center bg-transparent outline-none w-full placeholder-opacity-50" value="lovemore" onchange="saveMeta('title', this.value)">
                     <input type="text" id="main-subtitle" class="text-xs text-gray-400 mt-2 tracking-widest uppercase text-center bg-transparent outline-none w-full" value="Love log" onchange="saveMeta('subtitle', this.value)">
                 </div>
                 <div class="flex items-center justify-between px-2 mb-10">
-                    <div class="flex flex-col items-center">
-                        <div class="profile-img-container group" onclick="document.getElementById('file-char-a').click()">
-                            <img id="img-char-a" src="https://via.placeholder.com/150/e5e7eb/9ca3af?text=A" class="w-full h-full object-cover">
+                    <div class="flex flex-col items-center opacity-60 pointer-events-none">
+                        <div class="profile-img-container">
+                            <img id="main-char-a-img" src="https://via.placeholder.com/150/e5e7eb/9ca3af?text=A" class="w-full h-full object-cover">
                         </div>
-                        <input type="text" id="name-a" class="mt-3 text-xs font-bold text-center bg-transparent outline-none w-20 border-b border-transparent focus:border-gray-300" value="Name A" onchange="saveMeta('nameA', this.value)">
-                        <input type="file" id="file-char-a" class="hidden" accept="image/*" onchange="uploadImage(this, 'img-char-a', 'profileA', 300)">
+                        <span id="main-char-a-name" class="mt-3 text-xs font-bold text-center w-20 truncate">Name A</span>
                     </div>
                     <div class="flex flex-col items-center justify-center -mt-4 mx-2">
                         <i class="fas fa-heart theme-text text-xl animate-pulse mb-1"></i>
                         <span id="d-day-display" class="text-lg font-bold text-gray-700">D+0</span>
                         <input type="date" id="start-date" class="mt-1 text-[10px] bg-transparent text-gray-400 border rounded px-1 outline-none" onchange="saveMeta('startDate', this.value); calculateDDay()">
                     </div>
-                    <div class="flex flex-col items-center">
-                        <div class="profile-img-container group" onclick="document.getElementById('file-char-b').click()">
-                            <img id="img-char-b" src="https://via.placeholder.com/150/e5e7eb/9ca3af?text=B" class="w-full h-full object-cover">
+                    <div class="flex flex-col items-center opacity-60 pointer-events-none">
+                         <div class="profile-img-container">
+                            <img id="main-char-b-img" src="https://via.placeholder.com/150/e5e7eb/9ca3af?text=B" class="w-full h-full object-cover">
                         </div>
-                        <input type="text" id="name-b" class="mt-3 text-xs font-bold text-center bg-transparent outline-none w-20 border-b border-transparent focus:border-gray-300" value="Name B" onchange="saveMeta('nameB', this.value)">
-                        <input type="file" id="file-char-b" class="hidden" accept="image/*" onchange="uploadImage(this, 'img-char-b', 'profileB', 300)">
+                         <span id="main-char-b-name" class="mt-3 text-xs font-bold text-center w-20 truncate">Name B</span>
                     </div>
                 </div>
                 <div class="mb-12 px-2">
@@ -222,21 +290,71 @@
                 </div>
             </div>
 
-            <!-- 2. Album -->
+            <div id="tab-profile" class="tab-content" style="padding:0; height:100%; display:none;">
+                <div class="profile-container">
+                    <div class="profile-view-area">
+                        <div class="text-center w-full">
+                            <button id="identity-btn" class="identity-badge" onclick="toggleMyIdentity()">
+                                <i class="fas fa-check-circle"></i> <span>이 프로필을 '나'로 사용하기</span>
+                            </button>
+                            <p class="text-[10px] text-gray-400 mb-4">* 글 작성 시 이름과 사진이 자동 적용됩니다.</p>
+                        </div>
+                        <div class="w-full flex justify-center mb-6">
+                            <div class="w-full aspect-[4/5] max-w-[280px] rounded-xl overflow-hidden bg-gray-100 relative shadow-md group cursor-pointer" onclick="document.getElementById('file-profile-header').click()">
+                                <img id="profile-header-img" src="https://via.placeholder.com/300x400/f3f4f6/d1d5db?text=Profile+Photo" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition flex items-center justify-center">
+                                    <i class="fas fa-camera text-white opacity-0 group-hover:opacity-100 transition text-2xl"></i>
+                                </div>
+                                <input type="file" id="file-profile-header" class="hidden" accept="image/*" onchange="uploadProfileImage(this)">
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center mb-8 px-4">
+                            <input type="text" id="profile-name-input" class="profile-input-name" placeholder="NAME" onchange="saveCurrentProfile('name', this.value)">
+                            <textarea id="profile-desc-input" class="profile-input-desc" placeholder="세부 내용을 작성해주세요." onchange="saveCurrentProfile('desc', this.value)"></textarea>
+                        </div>
+                        
+                        <div class="w-full px-4 mb-20">
+                            <div class="text-xs text-gray-400 font-bold mb-4 text-center tracking-widest">THEME SONG</div>
+                            <input type="text" id="profile-song-url" class="w-full text-center text-xs border-b border-gray-200 py-1 outline-none mb-6 bg-transparent placeholder-gray-300" placeholder="YouTube URL 입력" onchange="updateProfileSong(this.value)">
+                            
+                            <div id="profile-player-container" class="music-player-card hidden">
+                                <div class="music-circle-mask">
+                                    <div id="youtube-player-placeholder"></div>
+                                </div>
+                                <div class="player-controls">
+                                    <i class="fas fa-step-backward control-btn" onclick="seekPlayer(-10)"></i>
+                                    <i id="player-play-btn" class="fas fa-play play-btn" onclick="togglePlay()"></i>
+                                    <i class="fas fa-step-forward control-btn" onclick="seekPlayer(10)"></i>
+                                </div>
+                                <div class="player-progress-bar">
+                                    <div class="player-progress-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-bottom-nav">
+                        <div id="sub-tab-a" class="profile-sub-tab active" onclick="switchProfileSub('A')">
+                            <input type="text" id="tab-name-a" value="Profile A" onchange="saveMeta('tabNameA', this.value); event.stopPropagation();" onclick="this.focus(); event.stopPropagation();">
+                        </div>
+                        <div id="sub-tab-b" class="profile-sub-tab" onclick="switchProfileSub('B')">
+                            <input type="text" id="tab-name-b" value="Profile B" onchange="saveMeta('tabNameB', this.value); event.stopPropagation();" onclick="this.focus(); event.stopPropagation();">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="tab-album" class="tab-content">
                 <h2 class="font-script text-3xl mb-6 text-center theme-text">Photo Album</h2>
                 <div id="album-grid" class="album-grid"></div>
                 <div class="fab-btn" onclick="openUploadModal()"><i class="fas fa-plus"></i></div>
             </div>
 
-            <!-- 3. Memo -->
             <div id="tab-memo" class="tab-content">
                 <h2 class="font-script text-3xl mb-6 text-center theme-text">Memo Pad</h2>
                 <div id="memo-grid" class="memo-grid"></div>
                 <div class="fab-btn" onclick="openMemoModal()"><i class="fas fa-plus"></i></div>
             </div>
 
-            <!-- 4. Log -->
             <div id="tab-log" class="tab-content">
                 <div class="book-container">
                     <div class="book-header"><h1 class="book-title">Our Story</h1><p class="book-subtitle">우리의 모든 순간</p></div>
@@ -245,21 +363,18 @@
                 </div>
             </div>
 
-            <!-- 5. Playlist -->
             <div id="tab-playlist" class="tab-content">
                 <h2 class="font-script text-3xl mb-6 text-center theme-text">Our Playlist</h2>
                 <div id="playlist-container" class="music-list"></div>
                 <div class="fab-btn" onclick="openMusicModal()"><i class="fas fa-music"></i></div>
             </div>
 
-            <!-- 6. TMI -->
             <div id="tab-tmi" class="tab-content">
                 <h2 class="font-script text-3xl mb-6 text-center theme-text">TMI</h2>
                 <div id="tmi-list" class="tmi-list"></div>
                 <div class="fab-btn" onclick="openTmiModal()"><i class="fas fa-plus"></i></div>
             </div>
 
-            <!-- 7. Settings -->
             <div id="tab-settings" class="tab-content">
                 <h2 class="text-2xl font-bold mb-6 theme-text"><i class="fas fa-cog mr-2"></i>설정</h2>
                 <div class="setting-section">
@@ -271,7 +386,6 @@
                         <div class="color-option" style="background:#CBCBCB" data-theme="mono" onclick="changeTheme('mono', this)"></div>
                     </div>
                 </div>
-                
                 <div class="setting-section">
                     <div class="setting-title"><i class="fas fa-font"></i> 글씨체</div>
                     <div id="font-options">
@@ -282,8 +396,6 @@
                         <div class="font-option" onclick="changeFont('Jua', this)">주아체</div>
                     </div>
                 </div>
-                
-                <!-- 텍스트 조정 -->
                 <div class="setting-section">
                     <div class="setting-title"><i class="fas fa-sliders-h"></i>텍스트 조정</div>
                     <div class="flex gap-2 mb-4">
@@ -303,8 +415,6 @@
                         <input id="input-height" type="range" min="1.0" max="3.0" value="1.6" step="0.1" oninput="updateTypography('height', this.value)">
                     </div>
                 </div>
-
-                <!-- 폰트 색상 선택 -->
                 <div class="setting-section">
                     <div class="setting-title"><i class="fas fa-fill-drip"></i>글자 색상</div>
                     <div class="flex items-center gap-4">
@@ -312,14 +422,11 @@
                         <span class="text-sm text-gray-400">클릭하여 색상 변경</span>
                     </div>
                 </div>
-                
                 <div class="mt-10 pt-6 border-t border-gray-100 text-center">
                     <p class="text-xs text-gray-400 font-bold">CREATED BY CODE</p>
                     <a href="https://twitter.com/100D0R" target="_blank" class="text-xs text-blue-400 hover:underline">@100D0R</a>
                     <button id="logout-btn" class="block mx-auto mt-4 text-xs text-red-400 hover:underline">로그아웃</button>
                 </div>
-
-                <!-- 드림 삭제/초기화 버튼 -->
                 <div class="mt-8 pt-6 border-t border-red-100">
                     <button id="btn-reset-dream" onclick="resetDream()" class="w-full bg-red-50 text-red-500 py-3 rounded-lg text-sm font-bold hover:bg-red-100 transition shadow-sm border border-red-100">
                         <i class="fas fa-exclamation-triangle mr-2"></i>드림 삭제 및 초기화
@@ -329,9 +436,9 @@
             </div>
         </div>
 
-        <!-- Tab Bar -->
         <div class="tab-bar">
             <div class="tab-item active" onclick="switchTab('main')"><i class="fas fa-home tab-icon"></i><span>Main</span></div>
+            <div class="tab-item" onclick="switchTab('profile')"><i class="fas fa-user-circle tab-icon"></i><span>Profile</span></div>
             <div class="tab-item" onclick="switchTab('album')"><i class="fas fa-images tab-icon"></i><span>Album</span></div>
             <div class="tab-item" onclick="switchTab('memo')"><i class="fas fa-sticky-note tab-icon"></i><span>Memo</span></div>
             <div class="tab-item" onclick="switchTab('log')"><i class="fas fa-file-alt tab-icon"></i><span>Log</span></div>
@@ -341,8 +448,6 @@
         </div>
     </div>
 
-    <!-- Modals -->
-    <!-- Album Modal (Only Photo) -->
     <div id="upload-modal" class="modal-overlay hidden">
         <div class="upload-modal-box">
             <h3 id="upload-modal-title" class="font-bold mb-2">추억 기록</h3>
@@ -356,18 +461,15 @@
         </div>
     </div>
 
-    <!-- Memo Modal -->
     <div id="memo-modal" class="modal-overlay hidden">
         <div class="upload-modal-box">
             <h3 id="memo-modal-title" class="font-bold mb-2">메모</h3>
             <input type="hidden" id="memo-id">
-            <div class="mb-3 text-left"><label class="text-xs text-gray-500">작성자</label><input type="text" id="memo-author-input" class="w-full border p-2 mb-2 text-sm"></div>
             <div class="mb-4 text-left"><label class="text-xs text-gray-500">내용</label><textarea id="memo-content-input" class="w-full border p-2 mb-2 text-sm h-24"></textarea></div>
             <div class="flex gap-2"><button onclick="closeModal('memo-modal')" class="flex-1 bg-gray-100 py-2 rounded">취소</button><button onclick="deleteMemo()" id="memo-delete-btn" class="hidden flex-1 bg-red-100 text-red-500 py-2 rounded">삭제</button><button id="btn-save-memo" onclick="saveMemo()" class="flex-1 bg-black text-white py-2 rounded">저장</button></div>
         </div>
     </div>
 
-    <!-- Music Modal -->
     <div id="music-modal" class="modal-overlay hidden">
         <div class="upload-modal-box">
             <h3 id="music-modal-title" class="font-bold mb-2">음악</h3>
@@ -379,7 +481,6 @@
         </div>
     </div>
 
-    <!-- Log Modal -->
     <div id="log-modal" class="modal-overlay hidden">
         <div class="full-screen-modal-box">
             <div class="novel-page-container">
@@ -396,12 +497,10 @@
         </div>
     </div>
 
-    <!-- TMI Modal -->
     <div id="tmi-modal" class="modal-overlay hidden">
         <div class="upload-modal-box">
             <h3 id="tmi-modal-title" class="text-lg font-bold mb-4 font-novel">TMI Card</h3>
             <input type="hidden" id="tmi-id">
-            <div class="mb-3 text-left"><label class="text-xs text-gray-500">작성자</label><input type="text" id="tmi-author-input" class="w-full border p-2 text-sm"></div>
             <div class="mb-4 text-left"><label class="text-xs text-gray-500">내용</label><textarea id="tmi-content-input" class="w-full border p-2 text-sm h-32 resize-none"></textarea></div>
             <div class="flex gap-2">
                 <button onclick="closeModal('tmi-modal')" class="flex-1 bg-gray-100 py-2 rounded">취소</button>
@@ -411,7 +510,6 @@
         </div>
     </div>
 
-    <!-- Lightbox (Edit/Delete added) -->
     <div id="lightbox-modal" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('lightbox-modal')">
         <div class="flex flex-col items-center gap-4">
             <img id="lightbox-img" class="lightbox-img">
@@ -419,7 +517,6 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -439,9 +536,25 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         let currentUser=null, myPairCode=null, currentPhotoId=null, unsubLogs=null, unsubMeta=null;
+        let currentProfileTab = 'A'; 
+        let myIdentity = null; 
         const screens = { login: document.getElementById('login-screen'), connect: document.getElementById('connect-screen'), app: document.getElementById('app-screen') };
 
-        // Auth & Persistence
+        // [NEW] YouTube API Load
+        let tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        let firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        let player;
+        let isPlayerReady = false;
+
+        function onYouTubeIframeAPIReady() {
+            // API Loaded, wait for init call
+            isPlayerReady = true;
+        }
+
+        // Auth
         document.getElementById('google-login-btn').addEventListener('click', () => {
              auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
                 .then(() => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()))
@@ -452,10 +565,10 @@
             if (user) {
                 currentUser = user;
                 screens.login.classList.add('hidden');
-                screens.connect.classList.remove('hidden'); // Always start at connect
+                screens.connect.classList.remove('hidden');
             } else {
-                if(unsubLogs) unsubLogs(); if(unsubMeta) unsubMeta(); // Clean listeners
-                currentUser = null; myPairCode = null;
+                if(unsubLogs) unsubLogs(); if(unsubMeta) unsubMeta(); 
+                currentUser = null; myPairCode = null; myIdentity = null;
                 screens.login.classList.remove('hidden');
                 screens.connect.classList.add('hidden');
                 screens.app.classList.add('hidden');
@@ -466,26 +579,45 @@
         document.getElementById('connect-btn').addEventListener('click', async () => {
             const code = document.getElementById('pair-code-input').value.trim().toUpperCase();
             if (code.length < 3) return alert("3글자 이상 입력.");
-            try { await db.collection('users').doc(currentUser.uid).set({email:currentUser.email, pairCode:code}, {merge:true}); myPairCode=code; initApp(); } catch(e){alert("오류:"+e.message);}
+            try { 
+                await db.collection('users').doc(currentUser.uid).set({email:currentUser.email, pairCode:code}, {merge:true}); 
+                myPairCode=code; 
+                initApp(); 
+            } catch(e){alert("오류:"+e.message);}
         });
 
-        function initApp() { screens.connect.classList.add('hidden'); screens.app.classList.remove('hidden'); loadMeta(); loadLogs(); }
+        async function initApp() { 
+            screens.connect.classList.add('hidden'); 
+            screens.app.classList.remove('hidden'); 
+            const userDoc = await db.collection('users').doc(currentUser.uid).get();
+            if(userDoc.exists && userDoc.data().role) myIdentity = userDoc.data().role;
+            loadMeta(); 
+            loadLogs(); 
+        }
 
-        // Data
+        let coupleData = {}; 
+        let cachedLogs = []; 
+
         function loadMeta() {
             if(unsubMeta) unsubMeta();
             unsubMeta = db.collection('couples').doc(myPairCode).onSnapshot(doc => {
                 if(doc.exists) {
-                    const d=doc.data();
+                    coupleData = doc.data();
+                    const d = coupleData;
                     if(d.title) document.getElementById('main-title').value=d.title;
                     if(d.subtitle) document.getElementById('main-subtitle').value=d.subtitle;
-                    if(d.nameA) { document.getElementById('name-a').value=d.nameA; }
-                    if(d.nameB) { document.getElementById('name-b').value=d.nameB; }
                     if(d.startDate) { document.getElementById('start-date').value=d.startDate; calculateDDay(); }
                     if(d.mainPhoto) document.getElementById('img-main-photo').src=d.mainPhoto;
-                    if(d.profileA) document.getElementById('img-char-a').src=d.profileA;
-                    if(d.profileB) document.getElementById('img-char-b').src=d.profileB;
+                    if(d.profileA) document.getElementById('main-char-a-img').src=d.profileA;
+                    if(d.profileB) document.getElementById('main-char-b-img').src=d.profileB;
+                    if(d.nameA) document.getElementById('main-char-a-name').innerText=d.nameA;
+                    if(d.nameB) document.getElementById('main-char-b-name').innerText=d.nameB;
+                    if(d.tabNameA) document.getElementById('tab-name-a').value = d.tabNameA;
+                    if(d.tabNameB) document.getElementById('tab-name-b').value = d.tabNameB;
                     
+                    renderProfileContent();
+                    renderLogs(cachedLogs);
+
                     if(d.theme) changeTheme(d.theme, document.querySelector(`.color-option[data-theme="${d.theme}"]`)||document.querySelector('.color-option'));
                     if(d.font) changeFont(d.font, document.querySelector(`.font-option[data-font="${d.font}"]`)||document.querySelector('.font-option'));
                     if(d.textSize) updateTypography('size', d.textSize);
@@ -500,32 +632,254 @@
                     if(d.textColor) document.getElementById('text-color-picker').value = d.textColor;
                 }
             });
-            // Also load assets for persistence
             db.collection('couples').doc(myPairCode).collection('assets').onSnapshot(snap => {
                 snap.forEach(doc => {
                     const key = doc.id; const val = doc.data().image;
-                    const map = {'mainPhoto':'img-main-photo','profileA':'img-char-a','profileB':'img-char-b'};
-                    if(map[key] && val) document.getElementById(map[key]).src = val;
+                    if(key === 'mainPhoto') document.getElementById('img-main-photo').src = val;
                 });
             });
         }
+
+        // Profile Logic
+        function switchProfileSub(type) {
+            currentProfileTab = type;
+            document.querySelectorAll('.profile-sub-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById('sub-tab-' + type.toLowerCase()).classList.add('active');
+            renderProfileContent();
+        }
+
+        function renderProfileContent() {
+            const suffix = currentProfileTab; 
+            const img = coupleData['profile' + suffix] || 'https://via.placeholder.com/300x400/f3f4f6/d1d5db?text=Profile+Photo';
+            const name = coupleData['name' + suffix] || '';
+            const desc = coupleData['desc' + suffix] || '';
+            const song = coupleData['song' + suffix] || '';
+            document.getElementById('profile-header-img').src = img;
+            document.getElementById('profile-name-input').value = name;
+            document.getElementById('profile-desc-input').value = desc;
+            document.getElementById('profile-song-url').value = song;
+            
+            // [NEW] Call Player Update
+            updatePlayer(song);
+            
+            updateIdentityBadge();
+        }
+
+        function saveCurrentProfile(field, value) { saveMeta(field + currentProfileTab, value); }
+        function updateProfileSong(url) { saveCurrentProfile('song', url); updatePlayer(url); }
+
+        // [NEW] YouTube Player Logic with API
+        function updatePlayer(url) {
+            const container = document.getElementById('profile-player-container');
+            let v = '';
+            if(url) {
+                if(url.includes('v=')) v = url.split('v=')[1].substring(0,11);
+                else if(url.includes('youtu.be/')) v = url.split('youtu.be/')[1].substring(0,11);
+            }
+
+            if(v) {
+                container.classList.remove('hidden');
+                if(player && typeof player.loadVideoById === 'function') {
+                    player.loadVideoById(v);
+                } else {
+                    // Create Player
+                    // Need to wait slightly if API isn't fully ready, but usually on page load it is.
+                    // If div replaced, create new on the ID
+                    if(document.getElementById('youtube-player-placeholder')) {
+                        player = new YT.Player('youtube-player-placeholder', {
+                            height: '100%',
+                            width: '100%',
+                            videoId: v,
+                            playerVars: {
+                                'playsinline': 1,
+                                'controls': 0, // Hide default controls
+                                'modestbranding': 1
+                            },
+                            events: {
+                                'onStateChange': onPlayerStateChange
+                            }
+                        });
+                    }
+                }
+            } else {
+                container.classList.add('hidden');
+                if(player && typeof player.stopVideo === 'function') player.stopVideo();
+            }
+        }
+
+        function togglePlay() {
+            if(!player) return;
+            const state = player.getPlayerState();
+            if(state === YT.PlayerState.PLAYING) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+        }
+
+        function seekPlayer(seconds) {
+            if(!player) return;
+            const currentTime = player.getCurrentTime();
+            player.seekTo(currentTime + seconds, true);
+        }
+
+        function onPlayerStateChange(event) {
+            const btn = document.getElementById('player-play-btn');
+            if (event.data == YT.PlayerState.PLAYING) {
+                btn.classList.remove('fa-play');
+                btn.classList.add('fa-pause');
+            } else {
+                btn.classList.remove('fa-pause');
+                btn.classList.add('fa-play');
+            }
+        }
+
+        function uploadProfileImage(input) {
+            if(input.files[0]) {
+                const assetName = 'profile' + currentProfileTab;
+                compressImage(input.files[0], 600, 0.7, async(b) => {
+                    document.getElementById('profile-header-img').src = b;
+                    await db.collection('couples').doc(myPairCode).collection('assets').doc(assetName).set({image:b});
+                    await db.collection('couples').doc(myPairCode).set({[assetName]: b}, {merge:true});
+                });
+            }
+        }
+
+        async function toggleMyIdentity() {
+            if(myIdentity === currentProfileTab) alert("이미 내 프로필로 설정되어 있습니다.");
+            else if(confirm(`현재 탭(${currentProfileTab})을 나의 프로필로 설정하시겠습니까?`)) {
+                myIdentity = currentProfileTab;
+                await db.collection('users').doc(currentUser.uid).set({role: myIdentity}, {merge:true});
+                updateIdentityBadge();
+            }
+        }
+
+        function updateIdentityBadge() {
+            const btn = document.getElementById('identity-btn');
+            if(myIdentity === currentProfileTab) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-check-circle"></i> <span>현재 내 프로필입니다</span>'; } 
+            else { btn.classList.remove('active'); btn.innerHTML = '<i class="far fa-circle"></i> <span>이 프로필을 \'나\'로 사용하기</span>'; }
+        }
+
+        function getMyInfo() {
+            if(!myIdentity) return { name: 'Unknown', profile: '', role: null };
+            return {
+                name: coupleData['name' + myIdentity] || 'Anonymous',
+                profile: coupleData['profile' + myIdentity] || '',
+                role: myIdentity
+            };
+        }
+
         const escapeStr = (str) => str ? str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n') : '';
+
+        function getLogDisplayInfo(log) {
+            let role = log.authorRole;
+            let name = log.author;
+            let img = 'https://via.placeholder.com/30?text=?';
+            if (!role && log.author) {
+                if (log.author === coupleData.nameA) role = 'A';
+                else if (log.author === coupleData.nameB) role = 'B';
+            }
+            if (role === 'A') {
+                name = coupleData.nameA || name;
+                img = coupleData.profileA || img;
+            } else if (role === 'B') {
+                name = coupleData.nameB || name;
+                img = coupleData.profileB || img;
+            }
+            return { name, img };
+        }
+
         function loadLogs() {
             if(unsubLogs) unsubLogs();
             unsubLogs = db.collection('logs').where('pairCode','==',myPairCode).onSnapshot(snap => {
                 const logs=[]; snap.forEach(d=>logs.push({id:d.id, ...d.data()}));
                 logs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-                const album=document.getElementById('album-grid'), memo=document.getElementById('memo-grid'), pl=document.getElementById('playlist-container'), novel=document.getElementById('novel-book-body'), tmi=document.getElementById('tmi-list');
-                album.innerHTML=''; memo.innerHTML=''; pl.innerHTML=''; novel.innerHTML=''; tmi.innerHTML='';
-                let count=0;
-                const novels=logs.filter(l=>l.type==='novel').reverse();
-                logs.filter(l=>l.type!=='novel').forEach(l=>{
-                    if(l.type==='photo') album.innerHTML+=`<div class="polaroid" onclick="viewPhoto('${l.id}','${l.image}')"><img src="${l.image}" class="polaroid-img"></div>`;
-                    else if(l.type==='memo') memo.innerHTML+=`<div class="memo-card" onclick="editMemo('${l.id}','${escapeStr(l.author)}','${escapeStr(l.text)}')"><div class="memo-tape"></div><div class="memo-content">${l.text}</div><div class="memo-footer"><span>${l.dateStr}</span><span class="font-bold">${l.author}</span></div></div>`;
-                    else if(l.type==='music') pl.innerHTML+=`<div class="music-card"><div class="music-video-wrapper"><iframe src="https://www.youtube.com/embed/${l.videoId}" frameborder="0"></iframe></div><div class="music-info"><h3>${l.title}</h3><div class="flex gap-2"><button onclick="editMusic('${l.id}','${escapeStr(l.title)}','${escapeStr(l.artist)}','${l.videoId}')"><i class="fas fa-edit text-gray-400"></i></button><button onclick="deleteMusic('${l.id}')"><i class="fas fa-trash text-red-300"></i></button></div></div></div>`;
-                    else if(l.type==='tmi') tmi.innerHTML+=`<div class="tmi-card" onclick="editTmi('${l.id}','${escapeStr(l.author)}','${escapeStr(l.text)}')"><div class="tmi-tape"></div><div class="tmi-header">TMI</div><div class="tmi-content">${l.text}</div><div class="tmi-footer"><span class="tmi-author">${l.author}</span><span>${l.dateStr}</span></div></div>`;
-                });
-                novels.forEach(l => novel.innerHTML+=`<div class="novel-chapter" onclick="editLog('${l.id}','${escapeStr(l.title)}','${escapeStr(l.text)}')"><div class="chapter-header"><span class="chapter-number">Chapter ${++count}</span><h2 class="chapter-title">${l.title}</h2></div><div class="chapter-content">${l.text}</div><div class="chapter-divider">✻</div></div>`);
+                cachedLogs = logs; 
+                renderLogs(logs);
+            });
+        }
+
+        function renderLogs(logs) {
+            const album=document.getElementById('album-grid'), memo=document.getElementById('memo-grid'), pl=document.getElementById('playlist-container'), novel=document.getElementById('novel-book-body'), tmi=document.getElementById('tmi-list');
+            album.innerHTML=''; memo.innerHTML=''; pl.innerHTML=''; novel.innerHTML=''; tmi.innerHTML='';
+            
+            let count=0;
+            const novels=logs.filter(l=>l.type==='novel').reverse();
+            
+            logs.filter(l=>l.type!=='novel').forEach(l=>{
+                const info = getLogDisplayInfo(l); 
+                
+                if(l.type==='photo') {
+                    album.innerHTML+=`<div class="polaroid" onclick="viewPhoto('${l.id}','${l.image}')"><img src="${l.image}" class="polaroid-img"></div>`;
+                }
+                else if(l.type==='memo') {
+                    memo.innerHTML+=`
+                    <div class="memo-card" onclick="editMemo('${l.id}','${escapeStr(l.text)}')">
+                        <div class="memo-tape"></div>
+                        <div class="memo-content">${l.text}</div>
+                        <div class="memo-footer">
+                            <span>${l.dateStr}</span>
+                            <div class="author-mini-box">
+                                <img src="${info.img}" class="author-mini-img">
+                                <span class="author-mini-name">${info.name}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                else if(l.type==='music') {
+                    pl.innerHTML+=`
+                    <div class="music-card">
+                        <div class="music-video-wrapper"><iframe src="https://www.youtube.com/embed/${l.videoId}" frameborder="0"></iframe></div>
+                        <div class="music-info">
+                            <div class="music-top-row">
+                                <h3 class="font-bold text-gray-800 text-lg">${l.title}</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="editMusic('${l.id}','${escapeStr(l.title)}','${escapeStr(l.artist)}','${l.videoId}')"><i class="fas fa-edit text-gray-400"></i></button>
+                                    <button onclick="deleteMusic('${l.id}')"><i class="fas fa-trash text-red-300"></i></button>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">${l.artist}</div>
+                            <div class="music-recommender">
+                                <img src="${info.img}" class="author-mini-img" style="width:20px;height:20px;">
+                                <span>${info.name}님의 추천</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                else if(l.type==='tmi') {
+                    tmi.innerHTML+=`
+                    <div class="tmi-card" onclick="editTmi('${l.id}','${escapeStr(l.text)}')">
+                        <div class="tmi-tape"></div>
+                        <div class="tmi-header">TMI</div>
+                        <div class="tmi-content">${l.text}</div>
+                        <div class="tmi-footer">
+                            <div class="author-mini-box">
+                                <img src="${info.img}" class="author-mini-img">
+                                <span class="author-mini-name">${info.name}</span>
+                            </div>
+                            <span>${l.dateStr}</span>
+                        </div>
+                    </div>`;
+                }
+            });
+
+            novels.forEach(l => {
+                const info = getLogDisplayInfo(l);
+                novel.innerHTML+=`
+                <div class="novel-chapter" onclick="editLog('${l.id}','${escapeStr(l.title)}','${escapeStr(l.text)}')">
+                    <div class="chapter-header">
+                        <span class="text-xs text-theme-color font-novel">Chapter ${++count}</span>
+                        <h2 class="chapter-title">${l.title}</h2>
+                        <div class="chapter-meta">
+                            <img src="${info.img}" class="author-mini-img" style="width:20px;height:20px;">
+                            <span>${info.name}</span>
+                            <span>|</span>
+                            <span>${l.dateStr}</span>
+                        </div>
+                    </div>
+                    <div class="chapter-content">${l.text}</div>
+                    <div class="chapter-divider">✻</div>
+                </div>`;
             });
         }
 
@@ -537,9 +891,9 @@
             };
         }
         async function saveMeta(k,v){ try{ await db.collection('couples').doc(myPairCode).set({[k]:v},{merge:true}); }catch(e){console.error(e);} }
-        function uploadImage(i,d,f,w=600){ if(i.files[0]) compressImage(i.files[0],w,0.7,async(b)=>{ document.getElementById(d).src=b; await db.collection('couples').doc(myPairCode).collection('assets').doc(f).set({image:b}); }); }
+        function uploadImage(i,d,f,w=600){ if(i.files[0]) compressImage(i.files[0],w,0.7,async(b)=>{ document.getElementById(d).src=b; await db.collection('couples').doc(myPairCode).collection('assets').doc(f).set({image:b}); await db.collection('couples').doc(myPairCode).set({[f]: b}, {merge:true}); }); }
         function calculateDDay(){ const v=document.getElementById('start-date').value; if(!v)return; const d=Math.floor((new Date()-new Date(v))/(1000*60*60*24)); document.getElementById('d-day-display').innerText=`D+${d+1}`; const n=Math.ceil((d+1)/100)*100; document.getElementById('progress-start-label').innerText=`D+${n-100}`; document.getElementById('progress-end-label').innerText=`D+${n}`; const p=((d+1)-(n-100))/100*100; document.getElementById('anniversary-bar').style.width=`${p}%`; document.getElementById('percent-tooltip').style.left=`${p}%`; document.getElementById('percent-tooltip').innerText=`${Math.round(p)}%`; }
-        function switchTab(t){ document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.getElementById('tab-'+t).classList.add('active'); document.querySelectorAll('.tab-item').forEach(i=>i.classList.remove('active')); event.currentTarget.classList.add('active'); }
+        function switchTab(t){ document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.getElementById('tab-'+t).classList.add('active'); if(t === 'profile') document.getElementById('tab-'+t).style.display = 'block'; else document.getElementById('tab-profile').style.display = 'none'; document.querySelectorAll('.tab-item').forEach(i=>i.classList.remove('active')); event.currentTarget.classList.add('active'); }
         
         // Modal Helpers
         function closeModal(id){ const m=document.getElementById(id); m.classList.remove('open'); setTimeout(()=>m.classList.add('hidden'),300); }
@@ -556,60 +910,70 @@
         function editPhoto(){ closeModal('lightbox-modal'); openUploadModal(); document.getElementById('upload-modal-title').innerText='사진 변경'; document.getElementById('photo-edit-mode').value='true'; document.getElementById('photo-id').value=currentPhotoId; document.getElementById('existing-photo-base64').value=document.getElementById('lightbox-img').src; document.getElementById('modal-preview').src=document.getElementById('lightbox-img').src; document.getElementById('modal-preview').classList.remove('hidden'); document.getElementById('modal-placeholder').classList.add('hidden'); document.getElementById('btn-save-polaroid').innerText='수정 완료'; }
         async function deletePhoto(){ if(confirm('삭제?')){ await db.collection('logs').doc(currentPhotoId).delete(); closeModal('lightbox-modal'); } }
         
-        // Memo
-        function openMemoModal(){ openModal('memo-modal'); document.getElementById('memo-modal-title').innerText='새 메모'; document.getElementById('memo-id').value=''; document.getElementById('memo-author-input').value=''; document.getElementById('memo-content-input').value=''; document.getElementById('memo-delete-btn').classList.add('hidden'); }
-        function editMemo(id,a,t){ openModal('memo-modal'); document.getElementById('memo-modal-title').innerText='메모 수정'; document.getElementById('memo-id').value=id; document.getElementById('memo-author-input').value=a; document.getElementById('memo-content-input').value=t; document.getElementById('memo-delete-btn').classList.remove('hidden'); }
+        // Memo (Updated)
+        function openMemoModal(){ openModal('memo-modal'); document.getElementById('memo-modal-title').innerText='새 메모'; document.getElementById('memo-id').value=''; document.getElementById('memo-content-input').value=''; document.getElementById('memo-delete-btn').classList.add('hidden'); }
+        function editMemo(id,t){ openModal('memo-modal'); document.getElementById('memo-modal-title').innerText='메모 수정'; document.getElementById('memo-id').value=id; document.getElementById('memo-content-input').value=t; document.getElementById('memo-delete-btn').classList.remove('hidden'); }
         async function saveMemo(){
-            const id=document.getElementById('memo-id').value, a=document.getElementById('memo-author-input').value, t=document.getElementById('memo-content-input').value;
+            const id=document.getElementById('memo-id').value, t=document.getElementById('memo-content-input').value;
             if(!t) return alert('내용 입력');
-            const d={pairCode:myPairCode, type:'memo', author:a, text:t, dateStr:new Date().toLocaleDateString(), createdAt:new Date()};
-            if(id) await db.collection('logs').doc(id).update(d); else await db.collection('logs').add(d);
+            const info = getMyInfo();
+            if(!id && (!info.role)) return alert('프로필 탭에서 내 프로필을 먼저 선택해주세요!');
+            const d={pairCode:myPairCode, type:'memo', text:t, dateStr:new Date().toLocaleDateString(), createdAt:new Date()};
+            if(!id) { d.author = info.name; d.authorRole = info.role; await db.collection('logs').add(d); }
+            else await db.collection('logs').doc(id).update({text:t});
             closeModal('memo-modal');
         }
         async function deleteMemo(){ const id=document.getElementById('memo-id').value; if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('memo-modal'); }
         
-        // Log
+        // Log (Updated)
         function openLogModal(){ openModal('log-modal'); document.getElementById('log-id').value=''; document.getElementById('log-title-input').value=''; document.getElementById('log-content-input').value=''; document.getElementById('log-date-display').innerText='-'; document.getElementById('log-delete-btn').classList.add('hidden'); }
         function editLog(id,t,c){ openModal('log-modal'); document.getElementById('log-id').value=id; document.getElementById('log-title-input').value=t; document.getElementById('log-content-input').value=c; document.getElementById('log-delete-btn').classList.remove('hidden'); }
         async function saveLog(){
             const id=document.getElementById('log-id').value, t=document.getElementById('log-title-input').value, c=document.getElementById('log-content-input').value;
             if(!t || !c) return alert('입력 확인');
+            const info = getMyInfo();
+            if(!id && (!info.role)) return alert('프로필 탭에서 내 프로필을 먼저 선택해주세요!');
             const d={pairCode:myPairCode, type:'novel', title:t, text:c, dateStr:new Date().toLocaleDateString(), createdAt:new Date()};
-            if(id) await db.collection('logs').doc(id).update(d); else await db.collection('logs').add(d);
+            if(!id) { d.author = info.name; d.authorRole = info.role; await db.collection('logs').add(d); }
+            else await db.collection('logs').doc(id).update({title:t, text:c});
             closeModal('log-modal');
         }
         async function deleteLog(){ const id=document.getElementById('log-id').value; if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('log-modal'); }
 
-        // Music
+        // Music (Updated)
         function openMusicModal(){ openModal('music-modal'); document.getElementById('music-id').value=''; document.getElementById('music-title-input').value=''; document.getElementById('music-artist-input').value=''; document.getElementById('music-url-input').value=''; document.getElementById('music-delete-btn').classList.add('hidden'); }
         function editMusic(id,t,a,v){ openModal('music-modal'); document.getElementById('music-id').value=id; document.getElementById('music-title-input').value=t; document.getElementById('music-artist-input').value=a; document.getElementById('music-url-input').value='https://youtu.be/'+v; document.getElementById('music-delete-btn').classList.remove('hidden'); }
         async function saveMusic(){
             const u=document.getElementById('music-url-input').value, t=document.getElementById('music-title-input').value, a=document.getElementById('music-artist-input').value, id=document.getElementById('music-id').value;
             let v=''; if(u.includes('v=')) v=u.split('v=')[1].substring(0,11); else if(u.includes('youtu.be/')) v=u.split('youtu.be/')[1].substring(0,11);
             if(!t || !v) return alert('필수 입력');
+            const info = getMyInfo();
+            if(!id && (!info.role)) return alert('프로필 탭에서 내 프로필을 먼저 선택해주세요!');
             const d={pairCode:myPairCode, type:'music', title:t, artist:a, videoId:v, createdAt:new Date()};
-            if(id) await db.collection('logs').doc(id).update(d); else await db.collection('logs').add(d);
+            if(!id) { d.author = info.name; d.authorRole = info.role; await db.collection('logs').add(d); }
+            else await db.collection('logs').doc(id).update({title:t, artist:a, videoId:v});
             closeModal('music-modal');
         }
         async function deleteMusic(id){ if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('music-modal'); }
 
-        // TMI
-        function openTmiModal(){ openModal('tmi-modal'); document.getElementById('tmi-id').value=''; document.getElementById('tmi-author-input').value=''; document.getElementById('tmi-content-input').value=''; document.getElementById('tmi-delete-btn').classList.add('hidden'); }
-        function editTmi(id,a,t){ openModal('tmi-modal'); document.getElementById('tmi-id').value=id; document.getElementById('tmi-author-input').value=a; document.getElementById('tmi-content-input').value=t; document.getElementById('tmi-delete-btn').classList.remove('hidden'); }
+        // TMI (Updated)
+        function openTmiModal(){ openModal('tmi-modal'); document.getElementById('tmi-id').value=''; document.getElementById('tmi-content-input').value=''; document.getElementById('tmi-delete-btn').classList.add('hidden'); }
+        function editTmi(id,t){ openModal('tmi-modal'); document.getElementById('tmi-id').value=id; document.getElementById('tmi-content-input').value=t; document.getElementById('tmi-delete-btn').classList.remove('hidden'); }
         async function saveTmi(){
-            const id=document.getElementById('tmi-id').value, a=document.getElementById('tmi-author-input').value, t=document.getElementById('tmi-content-input').value;
+            const id=document.getElementById('tmi-id').value, t=document.getElementById('tmi-content-input').value;
             if(!t) return alert('내용 입력');
-            const d={pairCode:myPairCode, type:'tmi', author:a, text:t, dateStr:new Date().toLocaleDateString(), createdAt:new Date()};
-            if(id) await db.collection('logs').doc(id).update(d); else await db.collection('logs').add(d);
+            const info = getMyInfo();
+            if(!id && (!info.role)) return alert('프로필 탭에서 내 프로필을 먼저 선택해주세요!');
+            const d={pairCode:myPairCode, type:'tmi', text:t, dateStr:new Date().toLocaleDateString(), createdAt:new Date()};
+            if(!id) { d.author = info.name; d.authorRole = info.role; await db.collection('logs').add(d); }
+            else await db.collection('logs').doc(id).update({text:t});
             closeModal('tmi-modal');
         }
         async function deleteTmi(){ const id=document.getElementById('tmi-id').value; if(id && confirm('삭제?')) await db.collection('logs').doc(id).delete(); closeModal('tmi-modal'); }
 
-        async function resetDream(){ if(confirm("초기화?")){ const s=await db.collection('logs').where('pairCode','==',myPairCode).get(); s.forEach(d=>d.ref.delete()); const a=await db.collection('couples').doc(myPairCode).collection('assets').get(); a.forEach(d=>d.ref.delete()); await db.collection('couples').doc(myPairCode).delete(); await db.collection('users').doc(currentUser.uid).update({pairCode:firebase.firestore.FieldValue.delete()}); location.reload(); } }
+        async function resetDream(){ if(confirm("초기화?")){ const s=await db.collection('logs').where('pairCode','==',myPairCode).get(); s.forEach(d=>d.ref.delete()); const a=await db.collection('couples').doc(myPairCode).collection('assets').get(); a.forEach(d=>d.ref.delete()); await db.collection('couples').doc(myPairCode).delete(); await db.collection('users').doc(currentUser.uid).update({pairCode:firebase.firestore.FieldValue.delete(), role: firebase.firestore.FieldValue.delete()}); location.reload(); } }
 
-        // Utils
-        function changeTheme(t,e){ const r=document.documentElement.style; document.querySelectorAll('.color-option').forEach(o=>o.classList.remove('selected')); e.classList.add('selected'); saveMeta('theme',t);
-            if(t=='strawberry'){r.setProperty('--theme-color','#FFCDC9');r.setProperty('--bg-color','#FFFAFA');} if(t=='cloud'){r.setProperty('--theme-color','#C6E7FF');r.setProperty('--bg-color','#F8FCFF');} if(t=='grape'){r.setProperty('--theme-color','#CDC1FF');r.setProperty('--bg-color','#FAF9FF');} if(t=='mono'){r.setProperty('--theme-color','#CBCBCB');r.setProperty('--bg-color','#FAFAFA');} }
+        function changeTheme(t,e){ const r=document.documentElement.style; document.querySelectorAll('.color-option').forEach(o=>o.classList.remove('selected')); e.classList.add('selected'); saveMeta('theme',t); if(t=='strawberry'){r.setProperty('--theme-color','#FFCDC9');r.setProperty('--bg-color','#FFFAFA');} if(t=='cloud'){r.setProperty('--theme-color','#C6E7FF');r.setProperty('--bg-color','#F8FCFF');} if(t=='grape'){r.setProperty('--theme-color','#CDC1FF');r.setProperty('--bg-color','#FAF9FF');} if(t=='mono'){r.setProperty('--theme-color','#CBCBCB');r.setProperty('--bg-color','#FAFAFA');} }
         function changeFont(n,e){ document.documentElement.style.setProperty('--main-font',n); document.querySelectorAll('.font-option').forEach(o=>o.classList.remove('selected')); e.classList.add('selected'); saveMeta('font',n); }
         function updateTypography(t,v){ const r=document.documentElement.style; if(t=='size'){r.setProperty('--base-font-size',v+'px'); saveMeta('textSize',v);} else if(t=='height'){r.setProperty('--line-height',v); saveMeta('lineHeight',v);} else if(t=='spacing'){r.setProperty('--letter-spacing',v+'px'); saveMeta('letterSpacing',v);} else if(t=='color'){r.setProperty('--text-color',v); saveMeta('textColor',v);} }
         function toggleStyle(s,b){ const r=document.documentElement.style; b.classList.toggle('active'); const a=b.classList.contains('active'); if(s=='bold'){r.setProperty('--font-weight',a?'700':'400'); saveMeta('fontWeight',a?'700':'400');} else{r.setProperty('--font-style',a?'italic':'normal'); saveMeta('fontStyle',a?'italic':'normal');} }
